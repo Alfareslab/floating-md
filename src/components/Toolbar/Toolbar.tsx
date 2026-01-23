@@ -1,5 +1,7 @@
 import React from 'react';
 import { toolbarRegistry, ToolbarItem } from './ToolbarConfig';
+import { useAutoHide } from '../../hooks/useAutoHide';
+import { Eye, EyeOff } from 'lucide-react';
 
 interface ToolbarProps {
     orientation: 'horizontal' | 'vertical';
@@ -8,10 +10,20 @@ interface ToolbarProps {
 
 export const Toolbar: React.FC<ToolbarProps> = ({ orientation, className = '' }) => {
     const [items, setItems] = React.useState<ToolbarItem[]>([]);
+    const [pinned, setPinned] = React.useState(false);
+    const { isVisible, show, startHideTimer } = useAutoHide(!pinned, 3000);
 
     React.useEffect(() => {
         setItems(toolbarRegistry.getAll());
-    }, []);
+
+        const handlePinToggle = () => {
+            setPinned(p => !p);
+            show();
+        };
+
+        window.addEventListener('toggle-pin', handlePinToggle);
+        return () => window.removeEventListener('toggle-pin', handlePinToggle);
+    }, [show]);
 
     const handleItemClick = async (item: ToolbarItem) => {
         if (item.type === 'separator') return;
@@ -25,20 +37,25 @@ export const Toolbar: React.FC<ToolbarProps> = ({ orientation, className = '' })
 
     return (
         <div
+            data-tauri-drag-region
+            onMouseEnter={show}
+            onMouseLeave={startHideTimer}
             className={`
         glass
         flex items-center gap-3 p-3
+        transition-all duration-500 ease-in-out
         ${orientation === 'horizontal' ? 'toolbar-horizontal' : 'toolbar-vertical'}
+        ${isVisible ? 'opacity-100 scale-100' : 'opacity-20 scale-90 blur-[1px]'} 
         ${className}
       `}
             style={{
-                borderRadius: '9999px', // Fully rounded capsule
+                borderRadius: '9999px',
             }}
         >
             {/* Toolbar Items */}
             <div
                 className={`
-          flex items-center gap-2
+          flex items-center gap-2 w-full h-full
           ${orientation === 'horizontal' ? 'flex-row' : 'flex-col'}
         `}
             >
@@ -54,6 +71,18 @@ export const Toolbar: React.FC<ToolbarProps> = ({ orientation, className = '' })
                             />
                         );
                     }
+
+                    // Special rendering for Pin button
+                    let icon = item.icon;
+                    if (item.id === 'pin') {
+                        icon = pinned ? <Eye size={20} className="text-cyan-400" /> : <EyeOff size={20} />;
+                    }
+
+                    // Special positioning for Quit button
+                    const isQuit = item.id === 'quit';
+                    const positionClass = isQuit
+                        ? (orientation === 'horizontal' ? 'ml-auto' : 'mt-auto')
+                        : '';
 
                     return (
                         <button
@@ -71,10 +100,11 @@ export const Toolbar: React.FC<ToolbarProps> = ({ orientation, className = '' })
                 active:scale-95
                 hover:text-cyan-400
                 hover:shadow-[0_0_15px_rgba(34,211,238,0.4)]
+                ${positionClass}
               `}
                         >
                             <span className="transition-transform duration-300 group-hover:scale-110">
-                                {item.icon}
+                                {icon}
                             </span>
                         </button>
                     );

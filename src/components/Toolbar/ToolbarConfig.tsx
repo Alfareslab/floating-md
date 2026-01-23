@@ -4,13 +4,18 @@
  */
 
 import { invoke } from '@tauri-apps/api/core';
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 import {
     Copy,
     ClipboardPaste,
     Scissors,
     CheckSquare,
     Sparkles,
-    Trash2
+    Trash2,
+    Eye,
+    EyeOff,
+    X
 } from 'lucide-react';
 import React from 'react';
 
@@ -27,24 +32,24 @@ export interface ToolbarItem {
 }
 
 const MarkdownIcon = ({ size = 20, className = "" }: { size?: number, className?: string }) => (
-    <svg 
-        xmlns= "http://www.w3.org/2000/svg"
-width = { size }
-height = { size }
-viewBox = "0 0 24 24"
-fill = "none"
-stroke = "currentColor"
-strokeWidth = "2"
-strokeLinecap = "round"
-strokeLinejoin = "round"
-className = { className }
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={size}
+        height={size}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className={className}
     >
-    <rect width="18" height = "18" x = "3" y = "3" rx = "2" ry = "2" />
+        <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
         <path d="M7 8v8" />
-            <path d="M7 8l3 5 3-5v8" />
-                <path d="M16 8v8" />
-                    <path d="M16 8c1.5 0 2.5.5 2.5 4s-1 4-2.5 4H16" />
-                        </svg>
+        <path d="M7 8l3 5 3-5v8" />
+        <path d="M16 8v8" />
+        <path d="M16 8c1.5 0 2.5.5 2.5 4s-1 4-2.5 4H16" />
+    </svg>
 );
 
 /**
@@ -119,10 +124,20 @@ export const defaultToolbarItems: ToolbarItem[] = [
         id: 'markdown',
         label: 'Markdown',
         icon: React.createElement(MarkdownIcon, { size: 20 }),
-        action: () => {
-            console.log('Toggle Markdown Editor');
-            const event = new CustomEvent('toggle-markdown-editor');
-            window.dispatchEvent(event);
+        action: async () => {
+            console.log('Toggle Markdown Editor Window');
+            const editorWin = await WebviewWindow.getByLabel('editor');
+            if (editorWin) {
+                const isVisible = await editorWin.isVisible();
+                if (isVisible) {
+                    await editorWin.hide();
+                } else {
+                    await editorWin.show();
+                    await editorWin.setFocus();
+                }
+            } else {
+                console.error("Editor window not found");
+            }
         },
         type: 'toggle',
         order: 7,
@@ -138,6 +153,38 @@ export const defaultToolbarItems: ToolbarItem[] = [
         type: 'action',
         order: 8,
         tooltip: 'Clean AI text',
+    },
+    {
+        id: 'separator-2',
+        label: '',
+        icon: null,
+        action: () => { },
+        type: 'separator',
+        order: 9,
+    },
+    {
+        id: 'pin',
+        label: 'Pin',
+        // Icon will be handled dynamically in Toolbar.tsx, but we set a default here
+        icon: React.createElement(EyeOff, { size: 20 }),
+        action: () => {
+            window.dispatchEvent(new CustomEvent('toggle-pin'));
+        },
+        type: 'toggle',
+        order: 10,
+        tooltip: 'Toggle Auto-Hide',
+    },
+    {
+        id: 'quit',
+        label: 'Quit',
+        icon: React.createElement(X, { size: 20, className: "text-red-400" }),
+        action: async () => {
+            const appWindow = getCurrentWindow();
+            await appWindow.close();
+        },
+        type: 'action',
+        order: 11,
+        tooltip: 'Close Application',
     },
 ];
 
@@ -171,6 +218,5 @@ class ToolbarRegistry {
         return this.items.get(id);
     }
 }
-
 
 export const toolbarRegistry = new ToolbarRegistry();

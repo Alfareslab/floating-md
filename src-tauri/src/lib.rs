@@ -69,6 +69,54 @@ fn set_position(window: tauri::Window, position: WindowPosition) -> Result<(), S
         Err("Window positioning is only available on Windows".to_string())
     }
 }
+// ... (imports)
+
+/// Check and dock window to nearest edge
+#[tauri::command]
+fn check_and_dock(window: tauri::Window) -> Result<String, String> {
+    #[cfg(windows)]
+    {
+        // Get current position
+        let current_pos = window.outer_position().map_err(|e| e.to_string())?;
+        
+        // Get primary monitor (MVP: assuming primary)
+        // Ideally we find the monitor the window is on
+        let monitor = window::get_primary_monitor().ok_or("Monitor not found")?;
+        
+        // Check snap (50px threshold)
+        if let Some(dock) = window::detect_edge_snap(current_pos.x, current_pos.y, &monitor, 50) {
+            
+            // Get target dimensions based on dock position
+            let (w, h) = window::get_docked_dimensions(dock);
+            
+            // Calculate exact position
+            let (new_x, new_y) = window::calculate_docked_position(&monitor, dock, w, h);
+            
+            // Apply new position and size using our low-level helper to avoid focus stealing
+            let pos_struct = crate::window::WindowPosition {
+                monitor_id: monitor.id,
+                dock_position: dock,
+                x: new_x,
+                y: new_y,
+                width: w,
+                height: h,
+            };
+            
+            let hwnd = window.hwnd().map_err(|e| e.to_string())?.0 as isize;
+            window::set_window_position(hwnd, &pos_struct)?;
+            
+            // Return new orientation for frontend
+            match dock {
+                crate::window::DockPosition::Top | crate::window::DockPosition::Bottom => Ok("horizontal".to_string()),
+                _ => Ok("vertical".to_string()),
+            }
+        } else {
+            Ok("none".to_string())
+        }
+    }
+    #[cfg(not(windows))]
+    Ok("none".to_string())
+}
 
 // ============ Clipboard Commands ============
 
@@ -301,6 +349,7 @@ pub fn run() {
             update_entry,
             save_position,
             load_position,
+            check_and_dock,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

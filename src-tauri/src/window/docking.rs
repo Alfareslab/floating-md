@@ -157,6 +157,15 @@ pub fn calculate_docked_position(
     }
 }
 
+/// Get recommended dimensions for a dock position
+pub fn get_docked_dimensions(dock_position: DockPosition) -> (i32, i32) {
+    match dock_position {
+        DockPosition::Left | DockPosition::Right => (80, 600), // Vertical toolbar
+        DockPosition::Top | DockPosition::Bottom => (600, 80), // Horizontal toolbar
+        DockPosition::Float => (80, 600), // Default vertical
+    }
+}
+
 /// Check if a point is near a screen edge
 pub fn detect_edge_snap(
     x: i32,
