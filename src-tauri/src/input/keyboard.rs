@@ -54,6 +54,12 @@ pub fn send_select_all() -> std::result::Result<(), String> {
     send_key_combo(&[vk::VK_CONTROL], vk::VK_A)
 }
 
+/// Send Delete key to the foreground window
+#[cfg(windows)]
+pub fn send_delete() -> std::result::Result<(), String> {
+    send_key(vk::VK_DELETE)
+}
+
 /// Send a key combination (modifiers + key)
 #[cfg(windows)]
 pub fn send_key_combo(modifiers: &[u16], key: u16) -> std::result::Result<(), String> {
@@ -197,6 +203,11 @@ pub fn send_undo() -> std::result::Result<(), String> {
 
 #[cfg(not(windows))]
 pub fn send_select_all() -> std::result::Result<(), String> {
+    Err("Keyboard injection is only available on Windows".to_string())
+}
+
+#[cfg(not(windows))]
+pub fn send_delete() -> std::result::Result<(), String> {
     Err("Keyboard injection is only available on Windows".to_string())
 }
 

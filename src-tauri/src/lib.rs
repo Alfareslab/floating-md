@@ -101,6 +101,26 @@ async fn send_cut() -> Result<(), String> {
     Ok(())
 }
 
+/// Send Ctrl+A to the foreground window
+#[tauri::command]
+async fn send_select_all() -> Result<(), String> {
+    window::save_foreground_window();
+    std::thread::sleep(std::time::Duration::from_millis(50));
+    input::send_select_all()?;
+    std::thread::sleep(std::time::Duration::from_millis(100));
+    Ok(())
+}
+
+/// Send Delete to the foreground window
+#[tauri::command]
+async fn send_delete() -> Result<(), String> {
+    window::save_foreground_window();
+    std::thread::sleep(std::time::Duration::from_millis(50));
+    input::send_delete()?;
+    std::thread::sleep(std::time::Duration::from_millis(100));
+    Ok(())
+}
+
 /// Get text from clipboard
 #[tauri::command]
 fn get_clipboard() -> Result<String, String> {
@@ -270,6 +290,8 @@ pub fn run() {
             get_clipboard,
             set_clipboard,
             type_text,
+            send_select_all,
+            send_delete,
             // Database commands
             get_recent_entries,
             search_clipboard,

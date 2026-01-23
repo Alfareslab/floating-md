@@ -1,0 +1,28 @@
+High-fidelity UI mockup of 'Floating MD', a modular floating toolbar for Windows (inspired by FastStone Capture but modern/glassy).
+
+**Visual Style:**
+- **Theme:** Dark, Premium Glassmorphism (Acrylic/Blur). Deep Charcoal (#1C1D21) with subtle transparency.
+- **Form Factor:** Slim, capsule-like toolbar. Not a traditional window.
+- **Aesthetic:** Windows 11 Fluent Design, soft shadows, rounded corners.
+
+**Two Variations in One Image:**
+1.  **Horizontal Toolbar (Top Docked):**
+    - A long, slim strip docked at the top center of the screen.
+    - **Zone A (Tools):** Fixed icons on the left: `[Copy] [Paste] [Cut] [Select All] [Sparkle/Clean]`.
+    - **Zone B (Divider):** A subtle vertical line separator.
+    - **Zone C (History):** Horizontal scrolling list of recent clipboard items (Text/Code icons).
+    - **Zone D (System):** Small "Settings" & "Pin" icons on the far right.
+
+2.  **Vertical Toolbar (Side Docked):**
+    - The same toolbar but rotated vertically, docked on the right edge.
+    - Icons stacked from top to bottom.
+    - Smart, compact look.
+
+**Key Elements:**
+- **Icons:** Minimalist, neon-cyan glow for active state.
+- **Hover Effect:** When hovering a history item, a "Preview Bubble" floats nearby (showing text content).
+- **Extensibility:** The design should look modular, as if you can snap more buttons onto it later.
+
+**Lighting:**
+- Soft, cinematic lighting highlights the edges (rim light).
+- 8k resolution, photorealistic rendering.
