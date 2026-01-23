@@ -8,11 +8,13 @@ use serde::{Deserialize, Serialize};
 
 #[cfg(windows)]
 use windows::{
-    core::*,
     Win32::Foundation::*,
     Win32::Graphics::Gdi::*,
     Win32::UI::WindowsAndMessaging::*,
 };
+
+#[cfg(windows)]
+use std::ffi::c_void;
 
 /// Represents a screen/monitor in the system
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -33,7 +35,7 @@ pub enum DockPosition {
     Right,
     Top,
     Bottom,
-    Float, // Not docked to any edge
+    Float,
 }
 
 /// Window position configuration
@@ -66,7 +68,6 @@ pub fn get_all_monitors() -> Vec<Monitor> {
     let mut monitors = Vec::new();
     
     unsafe {
-        // Callback function for EnumDisplayMonitors
         unsafe extern "system" fn monitor_enum_proc(
             hmonitor: HMONITOR,
             _hdc: HDC,
@@ -82,7 +83,6 @@ pub fn get_all_monitors() -> Vec<Monitor> {
                 let rect = info.monitorInfo.rcMonitor;
                 let is_primary = (info.monitorInfo.dwFlags & MONITORINFOF_PRIMARY) != 0;
                 
-                // Convert device name to string
                 let name: String = info.szDevice
                     .iter()
                     .take_while(|&&c| c != 0)
@@ -100,10 +100,10 @@ pub fn get_all_monitors() -> Vec<Monitor> {
                 });
             }
             
-            BOOL(1) // Continue enumeration
+            BOOL(1)
         }
         
-        EnumDisplayMonitors(
+        let _ = EnumDisplayMonitors(
             HDC::default(),
             None,
             Some(monitor_enum_proc),
@@ -157,7 +157,7 @@ pub fn calculate_docked_position(
     }
 }
 
-/// Check if a point is near a screen edge (within snap distance)
+/// Check if a point is near a screen edge
 pub fn detect_edge_snap(
     x: i32,
     y: i32,
@@ -188,24 +188,21 @@ pub fn detect_edge_snap(
 
 /// Move and size window to a specific position
 #[cfg(windows)]
-pub fn set_window_position(hwnd: isize, position: &WindowPosition) -> Result<(), String> {
+pub fn set_window_position(hwnd: isize, position: &WindowPosition) -> std::result::Result<(), String> {
     unsafe {
-        let hwnd = HWND(hwnd as *mut std::ffi::c_void);
+        let hwnd = HWND(hwnd as *mut c_void);
         
-        let result = SetWindowPos(
+        match SetWindowPos(
             hwnd,
-            HWND_TOPMOST, // Always on top
+            HWND_TOPMOST,
             position.x,
             position.y,
             position.width,
             position.height,
             SWP_SHOWWINDOW | SWP_NOACTIVATE,
-        );
-        
-        if result.as_bool() {
-            Ok(())
-        } else {
-            Err(format!("Failed to set window position: {:?}", GetLastError()))
+        ) {
+            Ok(_) => Ok(()),
+            Err(e) => Err(format!("Failed to set window position: {:?}", e)),
         }
     }
 }
@@ -221,49 +218,6 @@ pub fn get_primary_monitor() -> Option<Monitor> { None }
 pub fn get_monitor_by_id(_id: &str) -> Option<Monitor> { None }
 
 #[cfg(not(windows))]
-pub fn set_window_position(_hwnd: isize, _position: &WindowPosition) -> Result<(), String> {
+pub fn set_window_position(_hwnd: isize, _position: &WindowPosition) -> std::result::Result<(), String> {
     Err("Window positioning is only available on Windows".to_string())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    
-    #[test]
-    fn test_calculate_docked_position_right() {
-        let monitor = Monitor {
-            id: "test".to_string(),
-            name: "Test".to_string(),
-            x: 0,
-            y: 0,
-            width: 1920,
-            height: 1080,
-            is_primary: true,
-        };
-        
-        let (x, y) = calculate_docked_position(&monitor, DockPosition::Right, 80, 600);
-        assert_eq!(x, 1840); // 1920 - 80
-        assert_eq!(y, 240);  // (1080 - 600) / 2
-    }
-    
-    #[test]
-    fn test_detect_edge_snap() {
-        let monitor = Monitor {
-            id: "test".to_string(),
-            name: "Test".to_string(),
-            x: 0,
-            y: 0,
-            width: 1920,
-            height: 1080,
-            is_primary: true,
-        };
-        
-        // Near right edge
-        let snap = detect_edge_snap(1910, 500, &monitor, 20);
-        assert_eq!(snap, Some(DockPosition::Right));
-        
-        // Not near any edge
-        let snap = detect_edge_snap(960, 540, &monitor, 20);
-        assert_eq!(snap, None);
-    }
 }

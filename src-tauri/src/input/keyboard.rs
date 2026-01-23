@@ -1,18 +1,13 @@
 //! Keyboard Module
 //! 
 //! Handles sending keystrokes to other applications using the Windows SendInput API.
-//! This is used to trigger Ctrl+C (copy) and Ctrl+V (paste) in the foreground window.
 
 #![allow(non_snake_case)]
 
 #[cfg(windows)]
-use windows::{
-    core::*,
-    Win32::UI::Input::KeyboardAndMouse::*,
-};
+use windows::Win32::UI::Input::KeyboardAndMouse::*;
 
 /// Virtual key codes for common keys
-#[cfg(windows)]
 pub mod vk {
     pub const VK_CONTROL: u16 = 0x11;
     pub const VK_SHIFT: u16 = 0x10;
@@ -31,46 +26,37 @@ pub mod vk {
 
 /// Send Ctrl+C to the foreground window (Copy)
 #[cfg(windows)]
-pub fn send_copy() -> Result<(), String> {
+pub fn send_copy() -> std::result::Result<(), String> {
     send_key_combo(&[vk::VK_CONTROL], vk::VK_C)
 }
 
 /// Send Ctrl+V to the foreground window (Paste)
 #[cfg(windows)]
-pub fn send_paste() -> Result<(), String> {
+pub fn send_paste() -> std::result::Result<(), String> {
     send_key_combo(&[vk::VK_CONTROL], vk::VK_V)
 }
 
 /// Send Ctrl+X to the foreground window (Cut)
 #[cfg(windows)]
-pub fn send_cut() -> Result<(), String> {
+pub fn send_cut() -> std::result::Result<(), String> {
     send_key_combo(&[vk::VK_CONTROL], vk::VK_X)
 }
 
 /// Send Ctrl+Z to the foreground window (Undo)
 #[cfg(windows)]
-pub fn send_undo() -> Result<(), String> {
+pub fn send_undo() -> std::result::Result<(), String> {
     send_key_combo(&[vk::VK_CONTROL], vk::VK_Z)
 }
 
 /// Send Ctrl+A to the foreground window (Select All)
 #[cfg(windows)]
-pub fn send_select_all() -> Result<(), String> {
+pub fn send_select_all() -> std::result::Result<(), String> {
     send_key_combo(&[vk::VK_CONTROL], vk::VK_A)
 }
 
 /// Send a key combination (modifiers + key)
-/// 
-/// # Arguments
-/// * `modifiers` - Modifier keys to hold (Ctrl, Shift, Alt)
-/// * `key` - The main key to press
 #[cfg(windows)]
-pub fn send_key_combo(modifiers: &[u16], key: u16) -> Result<(), String> {
-    // Calculate number of inputs needed:
-    // - Down events for each modifier
-    // - Down event for key
-    // - Up event for key
-    // - Up events for each modifier (in reverse order)
+pub fn send_key_combo(modifiers: &[u16], key: u16) -> std::result::Result<(), String> {
     let num_inputs = modifiers.len() * 2 + 2;
     let mut inputs: Vec<INPUT> = Vec::with_capacity(num_inputs);
     
@@ -106,7 +92,7 @@ pub fn send_key_combo(modifiers: &[u16], key: u16) -> Result<(), String> {
 
 /// Send a single key press
 #[cfg(windows)]
-pub fn send_key(key: u16) -> Result<(), String> {
+pub fn send_key(key: u16) -> std::result::Result<(), String> {
     let inputs = [
         create_keyboard_input(key, false),
         create_keyboard_input(key, true),
@@ -124,9 +110,8 @@ pub fn send_key(key: u16) -> Result<(), String> {
 }
 
 /// Type a string character by character
-/// Note: This is slower but works for any Unicode character
 #[cfg(windows)]
-pub fn type_string(text: &str) -> Result<(), String> {
+pub fn type_string(text: &str) -> std::result::Result<(), String> {
     for ch in text.encode_utf16() {
         let inputs = [
             create_unicode_input(ch, false),
@@ -191,58 +176,41 @@ fn create_unicode_input(ch: u16, key_up: bool) -> INPUT {
 
 // Stub implementations for non-Windows
 #[cfg(not(windows))]
-pub mod vk {
-    pub const VK_CONTROL: u16 = 0x11;
-    pub const VK_SHIFT: u16 = 0x10;
-    pub const VK_ALT: u16 = 0x12;
-    pub const VK_C: u16 = 0x43;
-    pub const VK_V: u16 = 0x56;
-    pub const VK_X: u16 = 0x58;
-    pub const VK_Z: u16 = 0x5A;
-    pub const VK_A: u16 = 0x41;
-    pub const VK_BACK: u16 = 0x08;
-    pub const VK_DELETE: u16 = 0x2E;
-    pub const VK_RETURN: u16 = 0x0D;
-    pub const VK_TAB: u16 = 0x09;
-    pub const VK_ESCAPE: u16 = 0x1B;
-}
-
-#[cfg(not(windows))]
-pub fn send_copy() -> Result<(), String> {
+pub fn send_copy() -> std::result::Result<(), String> {
     Err("Keyboard injection is only available on Windows".to_string())
 }
 
 #[cfg(not(windows))]
-pub fn send_paste() -> Result<(), String> {
+pub fn send_paste() -> std::result::Result<(), String> {
     Err("Keyboard injection is only available on Windows".to_string())
 }
 
 #[cfg(not(windows))]
-pub fn send_cut() -> Result<(), String> {
+pub fn send_cut() -> std::result::Result<(), String> {
     Err("Keyboard injection is only available on Windows".to_string())
 }
 
 #[cfg(not(windows))]
-pub fn send_undo() -> Result<(), String> {
+pub fn send_undo() -> std::result::Result<(), String> {
     Err("Keyboard injection is only available on Windows".to_string())
 }
 
 #[cfg(not(windows))]
-pub fn send_select_all() -> Result<(), String> {
+pub fn send_select_all() -> std::result::Result<(), String> {
     Err("Keyboard injection is only available on Windows".to_string())
 }
 
 #[cfg(not(windows))]
-pub fn send_key_combo(_modifiers: &[u16], _key: u16) -> Result<(), String> {
+pub fn send_key_combo(_modifiers: &[u16], _key: u16) -> std::result::Result<(), String> {
     Err("Keyboard injection is only available on Windows".to_string())
 }
 
 #[cfg(not(windows))]
-pub fn send_key(_key: u16) -> Result<(), String> {
+pub fn send_key(_key: u16) -> std::result::Result<(), String> {
     Err("Keyboard injection is only available on Windows".to_string())
 }
 
 #[cfg(not(windows))]
-pub fn type_string(_text: &str) -> Result<(), String> {
+pub fn type_string(_text: &str) -> std::result::Result<(), String> {
     Err("Keyboard injection is only available on Windows".to_string())
 }

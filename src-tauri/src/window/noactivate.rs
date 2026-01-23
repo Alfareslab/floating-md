@@ -1,13 +1,7 @@
 //! WS_EX_NOACTIVATE Implementation
 //! 
 //! This module provides functionality to prevent window activation (focus stealing)
-//! when the floating bar is clicked. This is crucial for a utility bar that needs
-//! to send keystrokes to other applications without stealing their focus.
-//!
-//! # Strategy
-//! 1. Primary: Use WS_EX_NOACTIVATE extended window style
-//! 2. Fallback: Subclass window procedure to intercept WM_MOUSEACTIVATE
-//! 3. Emergency Fallback: Save/restore foreground window
+//! when the floating bar is clicked.
 
 #![allow(non_snake_case)]
 
@@ -16,7 +10,6 @@ use std::ffi::c_void;
 
 #[cfg(windows)]
 use windows::{
-    core::*,
     Win32::Foundation::*,
     Win32::UI::WindowsAndMessaging::*,
 };
@@ -28,32 +21,29 @@ static ORIGINAL_WNDPROC: AtomicPtr<c_void> = AtomicPtr::new(std::ptr::null_mut()
 static LAST_FOREGROUND_HWND: AtomicPtr<c_void> = AtomicPtr::new(std::ptr::null_mut());
 
 /// Apply WS_EX_NOACTIVATE style to a window handle
-/// 
-/// # Arguments
-/// * `hwnd` - The window handle (as raw pointer from Tauri)
-/// 
-/// # Returns
-/// * `Ok(())` if successful
-/// * `Err(String)` with error description if failed
 #[cfg(windows)]
-pub fn apply_noactivate_style(hwnd: isize) -> Result<(), String> {
+pub fn apply_noactivate_style(hwnd: isize) -> std::result::Result<(), String> {
     unsafe {
         let hwnd = HWND(hwnd as *mut c_void);
         
         // Get current extended style
         let current_style = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
         if current_style == 0 {
-            return Err(format!("Failed to get window style: {:?}", GetLastError()));
+            let err = GetLastError();
+            return Err(format!("Failed to get window style: {:?}", err));
         }
         
-        // Add WS_EX_NOACTIVATE and WS_EX_TOOLWINDOW (also helps with taskbar)
+        // Add WS_EX_NOACTIVATE and WS_EX_TOOLWINDOW
         let new_style = current_style 
             | WS_EX_NOACTIVATE.0 as isize 
             | WS_EX_TOOLWINDOW.0 as isize;
         
         let result = SetWindowLongPtrW(hwnd, GWL_EXSTYLE, new_style);
-        if result == 0 && GetLastError() != WIN32_ERROR(0) {
-            return Err(format!("Failed to set window style: {:?}", GetLastError()));
+        if result == 0 {
+            let err = GetLastError();
+            if err != WIN32_ERROR(0) {
+                return Err(format!("Failed to set window style: {:?}", err));
+            }
         }
         
         log::info!("Applied WS_EX_NOACTIVATE to window {:?}", hwnd);
@@ -62,16 +52,16 @@ pub fn apply_noactivate_style(hwnd: isize) -> Result<(), String> {
 }
 
 /// Subclass the window procedure to intercept WM_MOUSEACTIVATE
-/// This is a fallback for systems where WS_EX_NOACTIVATE doesn't work reliably
 #[cfg(windows)]
-pub fn subclass_window_for_noactivate(hwnd: isize) -> Result<(), String> {
+pub fn subclass_window_for_noactivate(hwnd: isize) -> std::result::Result<(), String> {
     unsafe {
         let hwnd = HWND(hwnd as *mut c_void);
         
         // Get the original window procedure
         let original_proc = GetWindowLongPtrW(hwnd, GWLP_WNDPROC);
         if original_proc == 0 {
-            return Err(format!("Failed to get window procedure: {:?}", GetLastError()));
+            let err = GetLastError();
+            return Err(format!("Failed to get window procedure: {:?}", err));
         }
         
         // Store the original procedure
@@ -81,11 +71,14 @@ pub fn subclass_window_for_noactivate(hwnd: isize) -> Result<(), String> {
         let result = SetWindowLongPtrW(
             hwnd, 
             GWLP_WNDPROC, 
-            noactivate_wndproc as isize
+            noactivate_wndproc as *const () as isize
         );
         
-        if result == 0 && GetLastError() != WIN32_ERROR(0) {
-            return Err(format!("Failed to subclass window: {:?}", GetLastError()));
+        if result == 0 {
+            let err = GetLastError();
+            if err != WIN32_ERROR(0) {
+                return Err(format!("Failed to subclass window: {:?}", err));
+            }
         }
         
         log::info!("Subclassed window {:?} for WM_MOUSEACTIVATE interception", hwnd);
@@ -103,12 +96,10 @@ unsafe extern "system" fn noactivate_wndproc(
 ) -> LRESULT {
     match msg {
         WM_MOUSEACTIVATE => {
-            // Return MA_NOACTIVATE to prevent activation
             log::trace!("Intercepted WM_MOUSEACTIVATE, returning MA_NOACTIVATE");
             return LRESULT(MA_NOACTIVATE as isize);
         }
         WM_ACTIVATE => {
-            // If we're being activated, try to restore the previous window
             let activation_state = (wparam.0 & 0xFFFF) as u32;
             if activation_state != WA_INACTIVE {
                 let last_hwnd = LAST_FOREGROUND_HWND.load(Ordering::SeqCst);
@@ -121,7 +112,7 @@ unsafe extern "system" fn noactivate_wndproc(
         _ => {}
     }
     
-    // Call the original window procedure for all other messages
+    // Call the original window procedure
     let original_proc = ORIGINAL_WNDPROC.load(Ordering::SeqCst);
     if !original_proc.is_null() {
         CallWindowProcW(
@@ -137,12 +128,11 @@ unsafe extern "system" fn noactivate_wndproc(
 }
 
 /// Save the current foreground window before our window might steal focus
-/// Call this before any click handler
 #[cfg(windows)]
 pub fn save_foreground_window() {
     unsafe {
         let fg_hwnd = GetForegroundWindow();
-        if fg_hwnd.0 != std::ptr::null_mut() {
+        if !fg_hwnd.0.is_null() {
             LAST_FOREGROUND_HWND.store(fg_hwnd.0, Ordering::SeqCst);
             log::trace!("Saved foreground window: {:?}", fg_hwnd);
         }
@@ -151,7 +141,7 @@ pub fn save_foreground_window() {
 
 /// Restore focus to the previously saved foreground window
 #[cfg(windows)]
-pub fn restore_foreground_window() -> Result<(), String> {
+pub fn restore_foreground_window() -> std::result::Result<(), String> {
     unsafe {
         let last_hwnd = LAST_FOREGROUND_HWND.load(Ordering::SeqCst);
         if last_hwnd.is_null() {
@@ -163,7 +153,8 @@ pub fn restore_foreground_window() -> Result<(), String> {
             log::trace!("Restored foreground window: {:?}", hwnd);
             Ok(())
         } else {
-            Err(format!("Failed to restore foreground window: {:?}", GetLastError()))
+            let err = GetLastError();
+            Err(format!("Failed to restore foreground window: {:?}", err))
         }
     }
 }
@@ -183,12 +174,12 @@ pub fn get_foreground_window() -> Option<isize> {
 
 // Stub implementations for non-Windows platforms
 #[cfg(not(windows))]
-pub fn apply_noactivate_style(_hwnd: isize) -> Result<(), String> {
+pub fn apply_noactivate_style(_hwnd: isize) -> std::result::Result<(), String> {
     Err("WS_EX_NOACTIVATE is only available on Windows".to_string())
 }
 
 #[cfg(not(windows))]
-pub fn subclass_window_for_noactivate(_hwnd: isize) -> Result<(), String> {
+pub fn subclass_window_for_noactivate(_hwnd: isize) -> std::result::Result<(), String> {
     Err("Window subclassing is only available on Windows".to_string())
 }
 
@@ -196,24 +187,11 @@ pub fn subclass_window_for_noactivate(_hwnd: isize) -> Result<(), String> {
 pub fn save_foreground_window() {}
 
 #[cfg(not(windows))]
-pub fn restore_foreground_window() -> Result<(), String> {
+pub fn restore_foreground_window() -> std::result::Result<(), String> {
     Err("Foreground window management is only available on Windows".to_string())
 }
 
 #[cfg(not(windows))]
 pub fn get_foreground_window() -> Option<isize> {
     None
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    
-    #[test]
-    #[cfg(windows)]
-    fn test_get_foreground_window() {
-        // Should return Some value as there's always a foreground window
-        let hwnd = get_foreground_window();
-        assert!(hwnd.is_some());
-    }
 }

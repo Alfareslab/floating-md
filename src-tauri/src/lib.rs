@@ -13,10 +13,10 @@ pub mod db;
 
 use std::sync::Mutex;
 use rusqlite::Connection;
-use tauri::{AppHandle, Manager, State};
+use tauri::{Manager, State};
 
 use crate::input::{ClipboardEntry, ClipboardContentType};
-use crate::window::{WindowPosition, DockPosition, Monitor};
+use crate::window::{WindowPosition, Monitor};
 
 /// Application state containing the database connection
 pub struct AppState {
@@ -65,6 +65,7 @@ fn set_position(window: tauri::Window, position: WindowPosition) -> Result<(), S
     }
     #[cfg(not(windows))]
     {
+        let _ = (window, position);
         Err("Window positioning is only available on Windows".to_string())
     }
 }
