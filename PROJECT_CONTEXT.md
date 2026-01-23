@@ -153,12 +153,22 @@
 - ✅ Tauri Commands Integration
 - **تم بواسطة:** Gemini 3 Flash + Claude Opus 4.5 (fixes)
 
-### 🔄 المرحلة 3: Design System (v0.3.0) - IN PROGRESS
-- 🔄 CSS Foundation (index.css)
+### 🔄 المرحلة 2.5: تصميم الواجهة (v0.2.5) - NEXT
+- ⏸️ تصميم Floating Dock
+- ⏸️ تصميم Hover Bubble
+- ⏸️ تصميم Markdown Editor
+- ⏸️ تصميم Smart Scrub UI
+- ⏸️ تصميم Toast Notifications
+- **النموذج:** Nano Banana Pro + Gemini 3 Pro High
+- **المخرجات:** صور/mockups في `docs/designs/`
+
+### ⏸️ المرحلة 3: Design System - CSS (v0.3.0) - PENDING
+- ⏸️ CSS Foundation (index.css)
 - ⏸️ Font Loading (Geist + IBM Plex Arabic)
 - ⏸️ Design Tokens + CSS Variables
 - ⏸️ Animation System
-- **النموذج:** Nano Banana Pro + Gemini 3 Pro High
+- **النموذج:** Claude Sonnet 4.5 (Thinking)
+- **⚠️ تبدأ بعد اعتماد التصاميم من المرحلة 2.5**
 
 ### المراحل القادمة:
 
@@ -222,11 +232,12 @@ floating-md/
 |---------|-------------------|--------|
 | **المرحلة 1: Setup** | Gemini 3 Flash | ✅ مكتمل |
 | **المرحلة 2: Rust Backend** | Claude Opus 4.5 (Thinking) | ✅ مكتمل |
-| **المرحلة 3: Design System** | **Nano Banana Pro + Gemini 3 Pro High** | 🔄 حالياً |
+| **المرحلة 2.5: تصميم الواجهة** | **Nano Banana Pro + Gemini 3 Pro High** | 🔄 التالي |
+| **المرحلة 3: Design System (كود)** | Claude Sonnet 4.5 (Thinking) | ⏸️ بعد 2.5 |
 | **المرحلة 4: UI Components** | Claude Sonnet 4.5 | ⏸️ قادم |
 | **المرحلة 5: Window Mgmt** | Claude Opus 4.5 (Thinking) | ⏸️ قادم |
-| **المرحلة 6: Testing** | Claude Sonnet 4.5 | اختبار منهجي |
-| **المرحلة 7: Docs** | Gemini 3 Flash | مهام نهائية سريعة |
+| **المرحلة 6: Testing** | Claude Sonnet 4.5 | ⏸️ قادم |
+| **المرحلة 7: Docs** | Gemini 3 Flash | ⏸️ قادم |
 
 ---
 

@@ -332,9 +332,71 @@
 
 ---
 
-### المرحلة 3: بناء Design System - CSS Foundation
+### المرحلة 2.5: تصميم الواجهة المرئية (UI/UX Design) 🎨
+
+**النموذج المناسب:** Nano Banana Pro + Gemini 3 Pro High
+
+**السبب:**
+- Nano Banana Pro متخصص في توليد التصاميم المرئية عالية الجودة
+- Gemini 3 Pro High لتحليل وتحسين التصاميم
+- **فصل التصميم عن الكود** = مراجعة أفضل وجودة أعلى
+
+**المرجع:** `docs/DESIGN_SPEC.md` (ملف التصميم التفصيلي)
+
+#### المهام:
+
+- [ ] 2.5.1: تصميم Floating Dock (الشريط الجانبي)
+  
+  **المطلوب:**
+  - الحالة المطوية (Collapsed): 80px عرض
+  - الحالة الموسعة (Expanded): 300px عرض
+  - أيقونات واضحة للأنواع (Text/Code/Markdown)
+  - الألوان: Deep Charcoal Palette من DESIGN_SPEC
+
+- [ ] 2.5.2: تصميم Hover Bubble (فقاعة المعاينة)
+  
+  **المطلوب:**
+  - تظهر عند Hover على عنصر في Dock
+  - معاينة للنص مع Truncation
+  - أزرار: Copy, Edit, Pin, Delete
+  - Glassmorphism أو Subtle Shadow
+
+- [ ] 2.5.3: تصميم Markdown Editor Panel
+  
+  **المطلوب:**
+  - Split View: Edit + Preview
+  - RTL Support كامل
+  - Syntax Highlighting Theme: Midnight Candy
+  - زر التحميل من Clipboard
+
+- [ ] 2.5.4: تصميم Smart Scrub Interface
+  
+  **المطلوب:**
+  - زر Sparkle ✨ واضح
+  - Animation عند التنظيف
+  - Toast Notification للـ Undo
+
+- [ ] 2.5.5: تصميم Toast Notifications
+  
+  **المطلوب:**
+  - أنواع: Success, Error, Undo
+  - موضع: أسفل يمين الشاشة
+  - Animation: Slide In/Out
+
+**📦 المخرجات:**
+- صور/mockups للتصميمات في `docs/designs/`
+- موافقة المطور على كل تصميم قبل البدء في الكود
+
+**✅ مكتملة بواسطة:** [سيُملأ بعد التنفيذ]  
+**📅 التاريخ:** [سيُملأ بعد التنفيذ]
+
+---
+
+### المرحلة 3: بناء Design System - CSS Foundation (تنفيذ الكود)
 
 **النموذج المناسب:** Claude Sonnet 4.5 (Thinking)
+
+**⚠️ ملاحظة:** هذه المرحلة تُنفَّذ **بعد اعتماد التصاميم** من المرحلة 2.5
 
 **السبب من SOTA_Models_2026:**
 - متوازن بين الجودة والسرعة
