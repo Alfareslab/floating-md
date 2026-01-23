@@ -4,7 +4,8 @@
 > **📅 إنشاء:** 2026-01-23  
 > **👤 المطور:** أحمد صالح  
 > **📍 الموقع:** طنطا، مصر  
-> **الإصدار الحالي:** v0.1.0 (Planning Phase)
+> **الإصدار الحالي:** v0.2.0 (Rust Backend Complete)
+> **📅 آخر تحديث:** 2026-01-24
 
 ---
 
@@ -17,7 +18,7 @@
 ### 1.1 Core Components
 
 #### 1️⃣ **Rust Backend (System Layer)**
-- **Tech:** Rust 2024 Edition + windows-rs 0.58+
+- **Tech:** Rust 2021 Edition + windows-rs 0.58+
 - **Role:** 
   - التحكم في Window (WS_EX_NOACTIVATE لمنع Focus Stealing)
   - مراقبة الحافظة (WM_CLIPBOARDUPDATE)
@@ -60,45 +61,47 @@
 
 > ✅ = مكتمل | 🔄 = قيد التنفيذ | ⏸️ = مؤجل
 
-### 2.1 UI & UX
+### 2.1 Backend Features (Rust)
 
-- ⏸️ **Theme:** Dark Mode فقط (مستوحى من Manus AI)
+#### ✅ **Window Module** (Phase 2 Complete)
+- ✅ `noactivate.rs`: WS_EX_NOACTIVATE + Window Subclassing Fallback
+- ✅ `docking.rs`: Multi-Monitor Support + Edge Snapping
+
+#### ✅ **Input Module** (Phase 2 Complete)
+- ✅ `clipboard.rs`: Read/Write + Content Type Detection
+- ✅ `keyboard.rs`: SendInput API + Ctrl+C/V Injection
+
+#### ✅ **Database Module** (Phase 2 Complete)
+- ✅ `schema.rs`: SQLite + FTS5 Virtual Table + Triggers
+- ✅ `queries.rs`: CRUD Operations + FTS5 Search
+
+### 2.2 UI & UX (Pending Phase 3-4)
+
+- 🔄 **Theme:** Dark Mode (Manus AI Inspired) - Tailwind configured
   - ألوان: Deep Charcoal (#1C1D21) + Cyan Accent (#88C0D0)
-- ⏸️ **Languages:** English + Arabic (RTL Support كامل)
+- ⏸️ **Languages:** English + Arabic (RTL Support)
 - ⏸️ **Key Interface Elements:**
   - Floating Dock (80px collapsed, 300px expanded)
   - Hover Bubbles (تظهر بعد 200ms)
-  - Markdown Editor Panel (قابل للتوسع)
-  - Toast Notifications (Undo Support)
+  - Markdown Editor Panel
+  - Toast Notifications
 
-### 2.2 Core Features
+### 2.3 Core Features (Pending Phase 4-5)
 
 #### ⏸️ **Global Copy/Paste**
-- أزرار Copy/Paste ترسل Ctrl+C/V للنافذة النشطة
-- حل مشكلة Focus Stealing باستخدام WS_EX_NOACTIVATE
+- Backend ready ✅ | UI pending
 
 #### ⏸️ **Clipboard History Manager**
-- سجل لآخر 100 عنصر منسوخ
-- تثبيت (Pin) للنصوص المتكررة
-- بحث فوري باستخدام FTS5
+- Backend ready ✅ | UI pending
 
 #### ⏸️ **Markdown Editor**
-- Edit Mode + Preview Mode
-- زر "Load from Clipboard"
-- RTL Support كامل
-- Syntax Highlighting (Shiki)
+- Dependencies installed ✅ | UI pending
 
-#### ⏸️ **Smart Scrub (تنظيف نصوص AI)**
-- اكتشاف مقدمات AI تلقائياً
-- زر Sparkle ✨ يدوي
-- Undo Toast (5 ثوان)
+#### ⏸️ **Smart Scrub**
+- Logic pending | UI pending
 
 #### ⏸️ **Window Management**
-- Always On Top
-- Auto-Hide/Peeking
-- Snap to Screen Edges
-- Multi-Monitor Support
-- حفظ الموضع عند إعادة التشغيل
+- Backend ready ✅ | Integration pending
 
 ---
 
@@ -136,23 +139,31 @@
 
 ## 5. Next Steps (Roadmap)
 
-### المرحلة الحالية: **Planning & Setup** (v0.1.0)
+### ✅ المرحلة 1: Setup (v0.1.0) - COMPLETE
+- ✅ Git Init + Initial Commit
+- ✅ Tauri + React + TypeScript Project
+- ✅ Tailwind CSS + PostCSS Configuration
+- ✅ Core Dependencies (Zustand, unified, Shiki)
+- **تم بواسطة:** Gemini 3 Flash
 
-1. ✅ **قراءة وتحليل المتطلبات**
-2. ✅ **إنشاء خطة التنفيذ الأولية**
-3. 🔄 **مراجعة القرارات التقنية مع المطور**
-   - اختيار React vs SolidJS
-   - تفعيل Window Vibrancy أم لا
-   - Smart Scrub تلقائي أم يدوي
-4. ⏸️ **إنشاء PROJECT_CONTEXT.md النهائي**
-5. ⏸️ **البدء في المرحلة 1: Setup**
+### ✅ المرحلة 2: Rust Backend (v0.2.0) - COMPLETE
+- ✅ Window Module (noactivate + docking)
+- ✅ Input Module (clipboard + keyboard)
+- ✅ Database Module (schema + queries + FTS5)
+- ✅ Tauri Commands Integration
+- **تم بواسطة:** Gemini 3 Flash + Claude Opus 4.5 (fixes)
+
+### 🔄 المرحلة 3: Design System (v0.3.0) - IN PROGRESS
+- 🔄 CSS Foundation (index.css)
+- ⏸️ Font Loading (Geist + IBM Plex Arabic)
+- ⏸️ Design Tokens + CSS Variables
+- ⏸️ Animation System
+- **النموذج:** Nano Banana Pro + Gemini 3 Pro High
 
 ### المراحل القادمة:
 
-- **v0.2.0:** Rust Backend (WS_EX_NOACTIVATE + Clipboard Monitor)
-- **v0.3.0:** Design System (Tailwind + Fonts)
 - **v0.4.0:** UI Components (Dock + Bubble + Editor)
-- **v0.5.0:** Window Management (Docking + Multi-Monitor)
+- **v0.5.0:** Window Management Integration
 - **v0.6.0:** Testing & Optimization
 - **v1.0.0:** Documentation & Release
 
@@ -188,12 +199,13 @@
 ### ✅ الهيكلة القياسية:
 ```
 floating-md/
-├── docs/           ✅ التوثيق والخطط
-├── scripts/        ⏸️ سكربتات الصيانة
-├── Backups/        ⏸️ النسخ الاحتياطية
-├── .git/           ⏸️ Git Repository
-├── src-tauri/      ⏸️ Rust Backend
-└── src/            ⏸️ React Frontend
+├── docs/           ✅ التوثيق (MASTER_CONSTITUTION, DESIGN_SPEC)
+├── plans/          ✅ خطط التنفيذ
+├── scripts/        ⏸️ سكربتات الصيانة (Phase 7)
+├── Backups/        ✅ النسخ الاحتياطية
+├── .git/           ✅ Git Repository (active)
+├── src-tauri/      ✅ Rust Backend (complete)
+└── src/            🔄 React Frontend (in progress)
 ```
 
 ### ✅ دعم العربية الأصيل:
@@ -206,13 +218,13 @@ floating-md/
 
 ## 8. AI Models Assignment (حسب SOTA_Models_2026.md)
 
-| المرحلة | النموذج الموصى به | السبب |
-|---------|-------------------|-------|
-| **المرحلة 1: Setup** | Gemini 3 Flash | مهام سريعة وبسيطة |
-| **المرحلة 2: Rust Backend** | Claude Opus 4.5 (Thinking) | أصعب مرحلة - Win32 معقد |
-| **المرحلة 3: Design System** | Claude Sonnet 4.5 (Thinking) | دقة التصميم |
-| **المرحلة 4: UI Components** | Claude Sonnet 4.5 | جودة كود React |
-| **المرحلة 5: Window Mgmt** | Claude Opus 4.5 (Thinking) | تعقيد Multi-Monitor |
+| المرحلة | النموذج الموصى به | الحالة |
+|---------|-------------------|--------|
+| **المرحلة 1: Setup** | Gemini 3 Flash | ✅ مكتمل |
+| **المرحلة 2: Rust Backend** | Claude Opus 4.5 (Thinking) | ✅ مكتمل |
+| **المرحلة 3: Design System** | **Nano Banana Pro + Gemini 3 Pro High** | 🔄 حالياً |
+| **المرحلة 4: UI Components** | Claude Sonnet 4.5 | ⏸️ قادم |
+| **المرحلة 5: Window Mgmt** | Claude Opus 4.5 (Thinking) | ⏸️ قادم |
 | **المرحلة 6: Testing** | Claude Sonnet 4.5 | اختبار منهجي |
 | **المرحلة 7: Docs** | Gemini 3 Flash | مهام نهائية سريعة |
 
@@ -231,5 +243,19 @@ floating-md/
 
 ---
 
-**آخر تحديث:** 2026-01-23 00:40  
-**الحالة:** **Planning - في انتظار القرارات التقنية النهائية**
+## 10. Design Reference
+
+> **ملف التصميم:** `docs/DESIGN_SPEC.md`
+
+يحتوي على:
+- Color System (Manus Aesthetic)
+- Typography Stack (Geist + IBM Plex Arabic)
+- Component Layouts (Hover Bubble)
+- Smart Scrub UX Flow
+- Focus State Feedback
+- CSS Variables Reference
+
+---
+
+**آخر تحديث:** 2026-01-24 14:00  
+**الحالة:** **Phase 3 - Design System (In Progress)**
