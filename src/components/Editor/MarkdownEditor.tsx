@@ -1,5 +1,10 @@
 import React from 'react';
 import { detectDirection } from '../../utils/bidi';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkGfm from 'remark-gfm';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
 
 interface MarkdownEditorProps {
     initialContent?: string;
@@ -12,6 +17,7 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 }) => {
     const [content, setContent] = React.useState(initialContent);
     const [mode, setMode] = React.useState<'edit' | 'preview'>('edit');
+    const [copyStatus, setCopyStatus] = React.useState<string | null>(null);
     const direction = detectDirection(content);
 
     const handleLoadFromClipboard = async () => {
@@ -24,8 +30,22 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
     };
 
     const handleCopyHTML = async () => {
-        // Will implement with markdown rendering in next phase
-        console.log('Copy HTML not yet implemented');
+        try {
+            const result = await unified()
+                .use(remarkParse)
+                .use(remarkGfm)
+                .use(remarkRehype)
+                .use(rehypeStringify)
+                .process(content);
+
+            await navigator.clipboard.writeText(String(result));
+            setCopyStatus('HTML Copied!');
+            setTimeout(() => setCopyStatus(null), 2000);
+        } catch (error) {
+            console.error('Failed to copy HTML:', error);
+            setCopyStatus('Failed to copy');
+            setTimeout(() => setCopyStatus(null), 2000);
+        }
     };
 
     return (

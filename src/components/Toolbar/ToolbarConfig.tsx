@@ -4,7 +4,6 @@
  */
 
 import { invoke } from '@tauri-apps/api/core';
-import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import {
     Copy,
@@ -13,7 +12,6 @@ import {
     CheckSquare,
     Sparkles,
     Trash2,
-    Eye,
     EyeOff,
     X
 } from 'lucide-react';
@@ -113,6 +111,30 @@ export const defaultToolbarItems: ToolbarItem[] = [
         tooltip: 'Delete (Del)',
     },
     {
+        id: 'history',
+        label: 'History',
+        icon: React.createElement('svg', {
+            xmlns: 'http://www.w3.org/2000/svg',
+            width: 20,
+            height: 20,
+            viewBox: '0 0 24 24',
+            fill: 'none',
+            stroke: 'currentColor',
+            strokeWidth: 2,
+            strokeLinecap: 'round',
+            strokeLinejoin: 'round',
+        }, [
+            React.createElement('circle', { key: 'c', cx: 12, cy: 12, r: 10 }),
+            React.createElement('polyline', { key: 'p', points: '12 6 12 12 16 14' }),
+        ]),
+        action: () => {
+            window.dispatchEvent(new CustomEvent('toggle-history'));
+        },
+        type: 'toggle',
+        order: 5.5,
+        tooltip: 'Clipboard History',
+    },
+    {
         id: 'separator-1',
         label: '',
         icon: null,
@@ -125,19 +147,7 @@ export const defaultToolbarItems: ToolbarItem[] = [
         label: 'Markdown',
         icon: React.createElement(MarkdownIcon, { size: 20 }),
         action: async () => {
-            console.log('Toggle Markdown Editor Window');
-            const editorWin = await WebviewWindow.getByLabel('editor');
-            if (editorWin) {
-                const isVisible = await editorWin.isVisible();
-                if (isVisible) {
-                    await editorWin.hide();
-                } else {
-                    await editorWin.show();
-                    await editorWin.setFocus();
-                }
-            } else {
-                console.error("Editor window not found");
-            }
+            await invoke('toggle_editor');
         },
         type: 'toggle',
         order: 7,
@@ -147,8 +157,13 @@ export const defaultToolbarItems: ToolbarItem[] = [
         id: 'sparkle',
         label: 'Smart Scrub',
         icon: React.createElement(Sparkles, { size: 20, className: "text-amber-400" }),
-        action: () => {
-            console.log('Smart Scrub triggered');
+        action: async () => {
+            try {
+                const result = await invoke<string>('smart_scrub');
+                console.log('Smart Scrub Result:', result);
+            } catch (error) {
+                console.error('Smart Scrub Failed:', error);
+            }
         },
         type: 'action',
         order: 8,

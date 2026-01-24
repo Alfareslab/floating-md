@@ -230,3 +230,41 @@ pub fn get_monitor_by_id(_id: &str) -> Option<Monitor> { None }
 pub fn set_window_position(_hwnd: isize, _position: &WindowPosition) -> std::result::Result<(), String> {
     Err("Window positioning is only available on Windows".to_string())
 }
+
+/// Calculate position for the editor window relative to the toolbar
+pub fn calculate_editor_position(
+    toolbar_pos: &WindowPosition,
+    editor_width: i32,
+    editor_height: i32,
+) -> WindowPosition {
+    let gap = 10;
+    let mut x = toolbar_pos.x;
+    let mut y = toolbar_pos.y;
+
+    match toolbar_pos.dock_position {
+        DockPosition::Left => {
+            x = toolbar_pos.x + toolbar_pos.width + gap;
+        },
+        DockPosition::Right => {
+            x = toolbar_pos.x - editor_width - gap;
+        },
+        DockPosition::Top => {
+            y = toolbar_pos.y + toolbar_pos.height + gap;
+        },
+        DockPosition::Bottom => {
+             y = toolbar_pos.y - editor_height - gap;
+        },
+        DockPosition::Float => {
+             x = toolbar_pos.x + toolbar_pos.width + gap;
+        }
+    }
+    
+    WindowPosition {
+        monitor_id: toolbar_pos.monitor_id.clone(),
+        dock_position: DockPosition::Float,
+        x,
+        y,
+        width: editor_width,
+        height: editor_height
+    }
+}

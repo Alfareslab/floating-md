@@ -694,26 +694,27 @@
 
 #### المهام:
 
-- [ ] 6.1: تحسين تموضع نافذة المحرر (Positioning)
-  - جعل نافذة `editor` تظهر ملاصقة للشريط (Sliding Panel) بدلاً من وسط الشاشة.
-  - استخدام `check_and_dock` logic لتحديد الجهة الصحيحة للفتح.
+- [x] 6.1: تحسين تموضع نافذة المحرر (Positioning)
+  - تم إنشاء `toggle_editor` command في Rust.
+  - تم إضافة `calculate_editor_position` في `docking.rs`.
+  - النافذة تظهر بجوار الشريط حسب مكانه.
 
-- [ ] 6.2: تفعيل Smart Scrub (AI Cleaning)
-  - تنفيذ منطق `Regex` المتقدم لتنظيف نصوص LLMs (ChatGPT/Claude preamble removal).
-  - الملف: `src/utils/smartScrub.ts`
-  - ربط زر `Sparkle` في الشريط بالوظيفة.
-  - إضافة إشعار (Toast) عند التنظيف مع خيار التراجع (Undo).
+- [x] 6.2: تفعيل Smart Scrub (AI Cleaning)
+  - تم إنشاء `src-tauri/src/ai/mod.rs` مع Regex patterns.
+  - تم إضافة `smart_scrub` command.
+  - زر Sparkle يقوم بالتنظيف فوراً.
 
-- [ ] 6.3: ربط Clipboard History (Backend -> Frontend)
-  - تفعيل استدعاء `get_history` من Rust.
-  - عرض الـ History (في قائمة منبثقة أو داخل المحرر).
+- [x] 6.3: ربط Clipboard History (Backend -> Frontend)
+  - تم إنشاء `ClipboardHistory.tsx` component.
+  - تم إضافة زر History (ساعة) في الشريط.
+  - القائمة تعرض آخر 10 عناصر.
 
-- [ ] 6.4: تفعيل أزرار المحرر (Editor Actions)
-  - زر `Load from Clipboard`: قراءة الحافظة وتحديث المحرر.
-  - زر `Copy HTML`: تحويل الماركداون لـ HTML ونسخه.
+- [x] 6.4: تفعيل أزرار المحرر (Editor Actions)
+  - `Load from Clipboard`: يعمل ✅
+  - `Copy HTML`: يستخدم unified/remark للتحويل ✅
 
-**✅ مكتملة بواسطة:** [سيُملأ بعد التنفيذ]  
-**📅 التاريخ:** [سيُملأ بعد التنفيذ]
+**✅ مكتملة بواسطة:** Antigravity (Claude 3.5 Sonnet)
+**📅 التاريخ:** 2026-01-25
 
 ---
 

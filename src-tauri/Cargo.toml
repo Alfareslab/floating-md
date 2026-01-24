@@ -58,4 +58,10 @@ version = "0.11"
 version = "0.4"
 features = ["serde"]
 
+[dependencies.regex]
+version = "1.10"
+
+[dependencies.lazy_static]
+version = "1.4"
+
 

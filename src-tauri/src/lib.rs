@@ -10,6 +10,7 @@
 pub mod window;
 pub mod input;
 pub mod db;
+pub mod ai;
 
 use std::sync::Mutex;
 use rusqlite::Connection;
@@ -116,6 +117,80 @@ fn check_and_dock(window: tauri::Window) -> Result<String, String> {
     }
     #[cfg(not(windows))]
     Ok("none".to_string())
+}
+
+/// Toggle editor window visibility and position it next to toolbar
+#[tauri::command]
+async fn toggle_editor(app: tauri::AppHandle) -> Result<(), String> {
+    use tauri::Manager;
+    
+    // Get windows
+    let editor_win = app.get_webview_window("editor").ok_or("Editor window not found")?;
+    let main_win = app.get_webview_window("main").ok_or("Main window not found")?;
+
+    // Check visibility
+    let is_visible = editor_win.is_visible().map_err(|e| e.to_string())?;
+
+    if is_visible {
+        editor_win.hide().map_err(|e| e.to_string())?;
+    } else {
+        // Position it before showing
+        #[cfg(windows)]
+        {
+            // Get main window position and size
+            let main_pos = main_win.outer_position().map_err(|e| e.to_string())?;
+            let main_size = main_win.outer_size().map_err(|e| e.to_string())?;
+            
+            // Get monitor
+            // Ideally should find monitor from point, but using primary for now or re-using logic
+            // To make this robust, we need access to the monitor list.
+            let monitor = window::get_primary_monitor().ok_or("Monitor not found")?;
+            
+            // Detect dock position again to be sure
+            let dock = window::detect_edge_snap(main_pos.x, main_pos.y, &monitor, 100)
+                .unwrap_or(window::DockPosition::Float);
+
+            // Construct Toolbar Position
+            let toolbar_pos = window::WindowPosition {
+                monitor_id: monitor.id.clone(),
+                dock_position: dock,
+                x: main_pos.x,
+                y: main_pos.y,
+                width: main_size.width as i32,
+                height: main_size.height as i32
+            };
+
+            // Calculate Editor Position
+            let editor_pos = window::calculate_editor_position(&toolbar_pos, 800, 600);
+            
+            // Apply
+            let hwnd = editor_win.hwnd().map_err(|e| e.to_string())?.0 as isize;
+            window::set_window_position(hwnd, &editor_pos)?;
+        }
+        
+        editor_win.show().map_err(|e| e.to_string())?;
+        editor_win.set_focus().map_err(|e| e.to_string())?;
+    }
+    
+    Ok(())
+}
+
+/// Smart scrub clipboard content
+#[tauri::command]
+async fn smart_scrub() -> Result<String, String> {
+    // 1. Get clipboard content
+    let text = input::get_clipboard_text()?;
+    
+    // 2. Scrub it
+    let clean_text = ai::scrub_text(&text);
+    
+    // 3. If changed, apply back
+    if clean_text != text {
+        input::set_clipboard_text(&clean_text)?;
+        Ok("cleaned".to_string())
+    } else {
+        Ok("no_change".to_string())
+    }
 }
 
 // ============ Clipboard Commands ============
@@ -350,6 +425,8 @@ pub fn run() {
             save_position,
             load_position,
             check_and_dock,
+            toggle_editor,
+            smart_scrub,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
