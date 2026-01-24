@@ -632,60 +632,40 @@
 
 #### المهام:
 
-- [ ] 5.1: إنشاء Window Configuration في Tauri
+- [x] 5.1: إنشاء Window Configuration في Tauri
   
   **الملف:** `src-tauri/tauri.conf.json`
-  
-  ```json
-  {
-    "windows": [{
-      "title": "Floating MD",
-      "width": 80,
-      "height": 600,
-      "decorations": false,
-      "transparent": true,
-      "alwaysOnTop": true,
-      "skipTaskbar": true,
-      "resizable": false
-    }]
-  }
-  ```
+  - تم تكوين نافذة `toolbar` (شفافة، بدون إطار، `alwaysOnTop`).
+  - تم إضافة نافذة `editor` (مخفية، `decorated: true`).
 
-- [ ] 5.2: تنفيذ Docking Logic & Orientation (Rust)
+- [x] 5.2: تنفيذ Docking Logic & Orientation (Rust)
   
-  **الملف:** `src-tauri/src/window/docking.rs`
-  
-  **الموظيفة:**
-  - اكتشاف حواف الشاشة (Top -> Horizontal, Side -> Vertical).
-  - تغيير أبعاد النافذة ديناميكياً:
-    - **Top:** Width = 600px, Height = 60px
-    - **Side:** Width = 80px, Height = 600px
-  - Snap to edge عند السحب
-  - حفظ Position في Database
-  - استعادة Position عند البدء
+  **الملفات:** `src-tauri/src/window/docking.rs`, `src-tauri/src/lib.rs`
+  - تم تنفيذ دالة `check_and_dock` للالتصاق بالحواف.
+  - تم إضافة منطق حساب الأبعاد بناءً على الاتجاه (أفقي/عمودي).
+  - تم استخدام `data-tauri-drag-region` للسحب.
 
-- [ ] 5.3: تنفيذ Auto-Hide/Peeking
+- [x] 5.3: تنفيذ Auto-Hide/Peeking & Pinning
   
-  **الملف:** `src/components/Dock/DockBehavior.tsx`
-  
-  **الوظيفة:**
-  - تقليص إلى "لسان" عند عدم الاستخدام
-  - توسيع عند Hover
-  - Collapse timer (3 ثوان)
+  **الملفات:** `src/hooks/useAutoHide.ts`, `src/hooks/useDocking.ts`
+  - تم تنفيذ `useAutoHide` مع دعم الشفافية والتصغير.
+  - تم إضافة زر **Pin (عين)** لمنع الإخفاء التلقائي.
+  - تم إضافة زر **Quit (X)** لإغلاق التطبيق، مع تموضعه في نهاية الشريط تلقائياً.
 
-- [ ] 5.4: Multi-Monitor Support
-  
-  **الوظيفة:**
-  - حفظ Monitor ID مع Position
-  - اكتشاف Monitor changes
-  - التعامل مع Monitor disconnect
+- [ ] 5.4: Multi-Monitor Support ⏸️ (مؤجل للمرحلة 6)
+  - سيتم اختباره مع تحسينات المحرر.
 
-- [ ] 5.5: Global Hotkey للإظهار/الإخفاء
-  
-  **الملف:** `src-tauri/src/hotkey.rs`
-  
-  **Hotkey:** `Ctrl+Shift+Space` (قابل للتخصيص)
+- [ ] 5.5: Global Hotkey للإظهار/الإخفاء ⏸️ (مؤجل للمرحلة 6)
 
+---
+✅ **مكتملة بواسطة:** Antigravity (Claude 3.5 Sonnet)
+📅 **التاريخ:** 2026-01-24
+📌 **إضافات:**
+- **Pin Toggle:** زر لتثبيت الشريط.
+- **Improved UX:** إخفاء ناعم (Opacity 20%) بدلاً من الحركة المفاجئة.
+- **Manual Routing:** فصل `Toolbar` عن `MarkdownEditor` في `App.tsx`.
+
+---
 **✅ مكتملة بواسطة:** [سيُملأ بعد التنفيذ]  
 **📅 التاريخ:** [سيُملأ بعد التنفيذ]
 
@@ -706,46 +686,55 @@
   - فتح Word
   - ضغط Paste من Floating MD
   - التأكد من عدم فقدان Focus
+### المرحلة 6: AI & Editor Logic Integration (تفعيل الذكاء والمنطق)
 
-- [ ] 6.2: اختبار RTL/BiDi
-  - نسخ نص عربي مع كود إنجليزي
-  - التأكد من العرض الصحيح
-  - اختبار في Editor Mode
+**النموذج المناسب:** Claude 3.5 Sonnet / Antigravity
 
-- [ ] 6.3: اختبار Smart Scrub
-  - نسخ رد من ChatGPT مع مقدمة
-  - ضغط Sparkle
-  - التأكد من حذف المقدمة فقط
-  - اختبار Undo
+**الهدف:** تحويل الأزرار الجامدة (Sparkle, Markdown) إلى ميزات حقيقية تعمل، وربط المنطق الخلفي بالواجهة بذكاء.
 
-- [ ] 6.4: اختبار Multi-Monitor
-  - نقل النافذة بين شاشتين
-  - إعادة التشغيل
-  - التأكد من استعادة الموضع
+#### المهام:
 
-- [ ] 6.5: اختبار FTS5 Search
-  - إضافة 100+ عنصر
-  - بحث بالعربية
-  - بحث بالإنجليزية
-  - قياس السرعة (يجب أقل من 10ms)
+- [ ] 6.1: تحسين تموضع نافذة المحرر (Positioning)
+  - جعل نافذة `editor` تظهر ملاصقة للشريط (Sliding Panel) بدلاً من وسط الشاشة.
+  - استخدام `check_and_dock` logic لتحديد الجهة الصحيحة للفتح.
 
-- [ ] 6.6: قياس الأداء
-  - Memory usage (Idle)
-  - Startup time
-  - Bundle size
-  - مقارنة مع الأهداف
+- [ ] 6.2: تفعيل Smart Scrub (AI Cleaning)
+  - تنفيذ منطق `Regex` المتقدم لتنظيف نصوص LLMs (ChatGPT/Claude preamble removal).
+  - الملف: `src/utils/smartScrub.ts`
+  - ربط زر `Sparkle` في الشريط بالوظيفة.
+  - إضافة إشعار (Toast) عند التنظيف مع خيار التراجع (Undo).
 
-- [ ] 6.7: Optimization
-  - Code splitting (Lazy load Editor)
-  - Tree shaking
-  - Font subsetting
+- [ ] 6.3: ربط Clipboard History (Backend -> Frontend)
+  - تفعيل استدعاء `get_history` من Rust.
+  - عرض الـ History (في قائمة منبثقة أو داخل المحرر).
+
+- [ ] 6.4: تفعيل أزرار المحرر (Editor Actions)
+  - زر `Load from Clipboard`: قراءة الحافظة وتحديث المحرر.
+  - زر `Copy HTML`: تحويل الماركداون لـ HTML ونسخه.
 
 **✅ مكتملة بواسطة:** [سيُملأ بعد التنفيذ]  
 **📅 التاريخ:** [سيُملأ بعد التنفيذ]
 
 ---
 
-### المرحلة 7: Documentation & Build
+### المرحلة 7: Testing & Optimization (الاختبار والتحسين)
+
+**النموذج المناسب:** Claude Sonnet 4.5
+
+#### المهام:
+
+- [ ] 7.1: اختبار Focus Stealing على Windows 10/11
+- [ ] 7.2: اختبار RTL/BiDi ودعم العربية.
+- [ ] 7.3: اختبار Smart Scrub (سيناريوهات حقيقية).
+- [ ] 7.4: اختبار Multi-Monitor (التنقل بين الشاشات).
+- [ ] 7.5: قياس الأداء (Memory < 100MB).
+
+**✅ مكتملة بواسطة:** [سيُملأ بعد التنفيذ]  
+**📅 التاريخ:** [سيُملأ بعد التنفيذ]
+
+---
+
+### المرحلة 8: Documentation & Build
 
 **النموذج المناسب:** Gemini 3 Flash
 
@@ -756,34 +745,34 @@
 
 #### المهام:
 
-- [ ] 7.1: كتابة README.md
+- [ ] 8.1: كتابة README.md
   - وصف المشروع
   - تعليمات التثبيت
   - لقطات شاشة
   - Keyboard shortcuts
 
-- [ ] 7.2: كتابة ARCHITECTURE.md
+- [ ] 8.2: كتابة ARCHITECTURE.md
   - شرح المعمارية
   - Data flow diagrams
   - API Reference
 
-- [ ] 7.3: إنشاء Build للإنتاج
+- [ ] 8.3: إنشاء Build للإنتاج
   ```bash
   pnpm tauri build
   ```
 
-- [ ] 7.4: إنشاء Installer
+- [ ] 8.4: إنشاء Installer
   - MSI installer لـ Windows
   - تضمين WebView2 Runtime
 
-- [ ] 7.5: إنشاء نسخة احتياطية
+- [ ] 8.5: إنشاء نسخة احتياطية
   ```
   Backups/v1.0.0_20260123_HHMMSS/
   ├── Source/
   └── Installer/
   ```
 
-- [ ] 7.6: Git Tagging
+- [ ] 8.6: Git Tagging
   ```bash
   git tag -a v1.0.0 -m "First stable release"
   git push origin v1.0.0
