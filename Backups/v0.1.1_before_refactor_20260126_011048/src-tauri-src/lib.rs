@@ -72,102 +72,6 @@ fn set_position(window: tauri::Window, position: WindowPosition) -> Result<(), S
         Err("Window positioning is only available on Windows".to_string())
     }
 }
-
-/// Resize window dynamically (for toolbar <-> editor transformation)
-#[tauri::command]
-async fn resize_window(window: tauri::Window, width: u32, height: u32) -> Result<(), String> {
-    use tauri::LogicalSize;
-    window.set_size(LogicalSize::new(width, height))
-        .map_err(|e| format!("Failed to resize window: {}", e))?;
-    Ok(())
-}
-
-/// Saved toolbar position and size before opening editor: (x, y, width, height)
-static SAVED_TOOLBAR_POSITION: std::sync::Mutex<Option<(i32, i32, u32, u32)>> = std::sync::Mutex::new(None);
-
-/// Set editor mode (changes window properties for editor view)
-#[tauri::command]
-async fn set_editor_mode(window: tauri::Window, is_editor: bool) -> Result<(), String> {
-    use tauri::{LogicalSize, LogicalPosition};
-    
-    if is_editor {
-        // Save current position AND size before opening editor
-        let mut current_x = 0;
-        let mut current_y = 0;
-        
-        if let (Ok(pos), Ok(size)) = (window.outer_position(), window.outer_size()) {
-            current_x = pos.x;
-            current_y = pos.y;
-            let mut saved = SAVED_TOOLBAR_POSITION.lock().unwrap();
-            *saved = Some((pos.x, pos.y, size.width, size.height));
-            log::info!("Saved toolbar geometry: pos({}, {}) size({}x{})", pos.x, pos.y, size.width, size.height);
-        }
-        
-        // Editor mode: larger window, resizable
-        let editor_width = 800;
-        let editor_height = 600;
-        
-        window.set_size(LogicalSize::new(editor_width as u32, editor_height as u32))
-            .map_err(|e| format!("Failed to resize: {}", e))?;
-        window.set_resizable(true)
-            .map_err(|e| format!("Failed to set resizable: {}", e))?;
-            
-        // Smart Position: Ensure window is fully on screen
-        if let Some(monitor) = window.current_monitor().ok().flatten() {
-            let screen_size = monitor.size();
-            let screen_pos = monitor.position();
-            
-            // Calculate relative position within monitor
-            let rel_x = current_x - screen_pos.x;
-            
-            let mut new_x = current_x;
-            let new_y = current_y;
-            
-            // Clamp X (Right Edge)
-            if rel_x + editor_width > screen_size.width as i32 {
-                new_x = screen_pos.x + (screen_size.width as i32 - editor_width);
-            }
-            // Clamp X (Left Edge)
-            if rel_x < 0 {
-                new_x = screen_pos.x;
-            }
-
-            // Apply new position if changed
-            if new_x != current_x {
-                 window.set_position(LogicalPosition::new(new_x, new_y))
-                    .map_err(|e| format!("Failed to adjust position: {}", e))?;
-            }
-        }
-    } else {
-        // Restore saved position FIRST (before resizing)
-        let saved_geometry = {
-            let saved = SAVED_TOOLBAR_POSITION.lock().unwrap();
-            *saved
-        };
-
-        if let Some((x, y, width, height)) = saved_geometry {
-            log::info!("Restoring toolbar geometry: pos({}, {}) size({}x{})", x, y, width, height);
-            
-            // Restore Position
-            window.set_position(LogicalPosition::new(x, y))
-                .map_err(|e| format!("Failed to restore position: {}", e))?;
-                
-            // Restore Size
-            window.set_size(LogicalSize::new(width, height))
-                .map_err(|e| format!("Failed to restore size: {}", e))?;
-        } else {
-            // Fallback default if no saved state
-            window.set_size(LogicalSize::new(80u32, 600u32))
-                .map_err(|e| format!("Failed to resize: {}", e))?;
-        }
-
-        window.set_resizable(false)
-            .map_err(|e| format!("Failed to set resizable: {}", e))?;
-    }
-    
-    log::info!("Set editor mode: {}", is_editor);
-    Ok(())
-}
 // ... (imports)
 
 /// Check and dock window to nearest edge
@@ -228,18 +132,66 @@ fn check_and_dock(window: tauri::Window) -> Result<String, String> {
     Ok("none".to_string())
 }
 
-/// Toggle editor mode
-/// Instead of opening a separate window, this emits an event to the frontend
-/// The frontend handles the transformation from toolbar to editor mode
+/// Toggle editor window visibility and position it next to toolbar
 #[tauri::command]
 async fn toggle_editor(app: tauri::AppHandle) -> Result<(), String> {
-    use tauri::Emitter;
+    use tauri::Manager;
     
-    // Emit event to frontend to toggle editor mode
-    app.emit("toggle-editor-mode", ())
-        .map_err(|e| format!("Failed to emit toggle-editor-mode event: {}", e))?;
+    // Get windows
+    let editor_win = app.get_webview_window("editor").ok_or("Editor window not found")?;
+    let main_win = app.get_webview_window("main").ok_or("Main window not found")?;
+
+    // Check visibility
+    let is_visible = editor_win.is_visible().map_err(|e| e.to_string())?;
+
+    if is_visible {
+        editor_win.hide().map_err(|e| e.to_string())?;
+    } else {
+        // Position it before showing
+        #[cfg(windows)]
+        {
+            // Get main window position and size
+            let main_pos = main_win.outer_position().map_err(|e| e.to_string())?;
+            let main_size = main_win.outer_size().map_err(|e| e.to_string())?;
+            
+            // Get monitor
+            let monitor = window::get_primary_monitor().ok_or("Monitor not found")?;
+            
+            // Detect dock position
+            let dock = window::detect_edge_snap(
+                main_pos.x, 
+                main_pos.y, 
+                main_size.width as i32,
+                main_size.height as i32,
+                &monitor, 
+                100
+            );
+
+            // Construct Toolbar Position
+            let toolbar_pos = window::WindowPosition {
+                monitor_id: monitor.id.clone(),
+                dock_position: dock,
+                x: main_pos.x,
+                y: main_pos.y,
+                width: main_size.width as i32,
+                height: main_size.height as i32
+            };
+
+            // Calculate Editor Position
+            let editor_pos = window::calculate_editor_position(&toolbar_pos, 800, 600);
+            
+            // Apply
+            let hwnd = editor_win.hwnd().map_err(|e| e.to_string())?.0 as isize;
+            window::set_window_position(hwnd, &editor_pos)?;
+        }
+        
+        // Navigate to editor page (in case it wasn't loaded yet)
+        let _ = editor_win.navigate("http://localhost:1420/editor".parse().unwrap());
+        
+        editor_win.show().map_err(|e| e.to_string())?;
+        editor_win.set_focus().map_err(|e| e.to_string())?;
+    }
     
-    log::info!("Emitted toggle-editor-mode event");
     Ok(())
 }
 
@@ -487,8 +439,6 @@ pub fn run() {
             save_foreground,
             restore_foreground,
             set_position,
-            resize_window,
-            set_editor_mode,
             // Clipboard commands
             send_copy,
             send_paste,

@@ -25,6 +25,17 @@
         "resizable": false,
         "visible": true,
         "shadow": false
+      },
+      {
+        "label": "editor",
+        "title": "Markdown Editor",
+        "width": 800,
+        "height": 600,
+        "decorations": true,
+        "transparent": false,
+        "alwaysOnTop": false,
+        "visible": false,
+        "resizable": true
       }
     ],
     "security": {

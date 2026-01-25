@@ -5,27 +5,17 @@ import { invoke } from '@tauri-apps/api/core';
  * Hook to handle window docking and snap-to-edge logic
  * Polls the backend every 1500ms to check if window should snap to an edge.
  * The backend now uses "magnetic" behavior - always snapping to nearest edge.
- * 
- * @param onOrientationChange - Callback when orientation changes
- * @param enabled - Whether docking should be active (false in editor mode)
  */
 export const useDocking = (
-    onOrientationChange: (orientation: 'horizontal' | 'vertical') => void,
-    enabled: boolean = true
+    onOrientationChange: (orientation: 'horizontal' | 'vertical') => void
 ) => {
     useEffect(() => {
-        // Don't run docking logic if disabled (e.g., in editor mode)
-        if (!enabled) {
-            console.log("useDocking: DISABLED (editor mode)");
-            return;
-        }
-
-        console.log("useDocking: ENABLED (toolbar mode)");
-
         // Poll for docking status every 1500ms
+        // Gives user time to drag before snapping kicks in
         const intervalId = setInterval(async () => {
             try {
                 const orientation = await invoke<string>('check_and_dock');
+                // Backend always returns an orientation now (no 'none')
                 onOrientationChange(orientation as 'horizontal' | 'vertical');
             } catch (error) {
                 console.error("Docking check failed:", error);
@@ -33,5 +23,5 @@ export const useDocking = (
         }, 1500);
 
         return () => clearInterval(intervalId);
-    }, [onOrientationChange, enabled]);
+    }, [onOrientationChange]);
 };

@@ -33,27 +33,20 @@
 
   /* CSS Variables for Dynamic Theming */
   :root {
-    /* Color Palette - Default Dark Theme */
-    --bg-base: #1C1D21;
-    --fg-base: #EAEAEA;
-    --toolbar-bg: rgba(30, 30, 35, 0.8);
-    --accent: #F59E0B;
-    /* Amber-400 */
-
-    /* Legacy Variables - mapped to new system where possible */
-    --color-base: var(--bg-base);
+    /* Color Palette - Deep Premium Charcoal */
+    --color-base: #1C1D21;
     --color-surface: #262933;
+    /* Slightly lighter than base */
     --color-hover: #343946;
     --color-border: #424959;
-    --color-accent: var(--accent);
-
-    --color-text-primary: var(--fg-base);
+    --color-accent: #22d3ee;
+    /* Tailwind cyan-400 */
+    --color-text-primary: #F8FAFC;
     --color-text-secondary: #94A3B8;
     --color-text-muted: #64748B;
 
     /* Premium Glassmorphism Effects */
-    --glass-bg: rgba(23, 23, 28, 0.90);
-    /* Reduced from 0.75 */
+    --glass-bg: rgba(23, 23, 28, 0.75);
     /* Darker, more opaque */
     --glass-border: rgba(255, 255, 255, 0.08);
     --glass-blur: 20px;
@@ -85,13 +78,12 @@
   }
 
   html,
-  body,
-  #root {
+  body {
     width: 100%;
     height: 100%;
     overflow: hidden;
     font-family: var(--font-latin);
-    background-color: transparent !important;
+    background-color: transparent;
     color: var(--color-text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -214,21 +206,6 @@
 
   .p-inline-end-4 {
     padding-inline-end: 1rem;
-  }
-
-  /* Theme Utilities */
-  .bg-base {
-    background-color: var(--bg-base);
-    color: var(--fg-base);
-  }
-
-  .text-base-content {
-    color: var(--fg-base);
-  }
-
-  .bg-toolbar {
-    background-color: var(--toolbar-bg);
-    border-color: var(--color-border);
   }
 
   /* Positioning Utilities */

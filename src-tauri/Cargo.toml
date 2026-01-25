@@ -64,4 +64,7 @@ version = "1.10"
 [dependencies.lazy_static]
 version = "1.4"
 
+[dev-dependencies]
+tempfile = "3"
+
 
