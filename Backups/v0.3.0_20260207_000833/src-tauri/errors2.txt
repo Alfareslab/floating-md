@@ -1,0 +1,27 @@
+﻿cargo :     Checking floating-md v0.1.0 (D:\MyProjects\Copy 
+past floting ai\floating-md\src-tauri)
+At line:1 char:54
++ ... H = "$env:USERPROFILE\.cargo\bin;$env:PATH"; cargo check 
+2>&1 | Out-F ...
++                                                  
+~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Checking fl.. 
+   .g-md\src-tauri):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: direct cast of function item into an integer
+  --> src\window\noactivate.rs:74:32
+   |
+74 |             noactivate_wndproc as isize
+   |                                ^^^^^^^^
+   |
+   = note: `#[warn(function_casts_as_integer)]` on by default
+help: first cast to a pointer `as *const ()`
+   |
+74 |             noactivate_wndproc as *const () as isize
+   |                                ++++++++++++
+
+warning: `floating-md` (lib) generated 1 warning (run `cargo 
+fix --lib -p floating-md` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) 
+in 3.90s

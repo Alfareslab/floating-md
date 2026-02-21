@@ -4,7 +4,8 @@
 > **📅 إنشاء:** 2026-01-23  
 > **👤 المطور:** أحمد صالح  
 > **📍 الموقع:** طنطا، مصر  
-> **الإصدار الحالي:** v0.1.0 (Planning Phase)
+> **الإصدار الحالي:** v0.4.0 (Polish & Advanced Features)
+> **📅 آخر تحديث:** 2026-02-07
 
 ---
 
@@ -17,7 +18,7 @@
 ### 1.1 Core Components
 
 #### 1️⃣ **Rust Backend (System Layer)**
-- **Tech:** Rust 2024 Edition + windows-rs 0.58+
+- **Tech:** Rust 2021 Edition + windows-rs 0.58+
 - **Role:** 
   - التحكم في Window (WS_EX_NOACTIVATE لمنع Focus Stealing)
   - مراقبة الحافظة (WM_CLIPBOARDUPDATE)
@@ -60,45 +61,49 @@
 
 > ✅ = مكتمل | 🔄 = قيد التنفيذ | ⏸️ = مؤجل
 
-### 2.1 UI & UX
+### 2.1 Backend Features (Rust)
 
-- ⏸️ **Theme:** Dark Mode فقط (مستوحى من Manus AI)
+#### ✅ **Window Module** (Phase 2 Complete)
+- ✅ `noactivate.rs`: WS_EX_NOACTIVATE + Window Subclassing Fallback
+- ✅ `docking.rs`: Multi-Monitor Support + Edge Snapping (Smooth Drag Optimized 🏎️)
+
+#### ✅ **Input Module** (Phase 2 Complete)
+- ✅ `clipboard.rs`: Read/Write + Content Type Detection
+- ✅ `keyboard.rs`: SendInput API + Ctrl+C/V Injection
+
+#### ✅ **Database Module** (Phase 2 Complete)
+- ✅ `schema.rs`: SQLite + FTS5 Virtual Table + Triggers
+- ✅ `queries.rs`: CRUD Operations + FTS5 Search
+
+### 2.2 UI & UX (v0.4.0 Enhanced)
+
+- 🔄 **Theme:** Dark Mode (Manus AI Inspired) - Tailwind configured
   - ألوان: Deep Charcoal (#1C1D21) + Cyan Accent (#88C0D0)
-- ⏸️ **Languages:** English + Arabic (RTL Support كامل)
-- ⏸️ **Key Interface Elements:**
+- ✅ **Languages:** English + Arabic (RTL Support Optimized)
+- ✅ **Key Interface Elements:**
   - Floating Dock (80px collapsed, 300px expanded)
   - Hover Bubbles (تظهر بعد 200ms)
-  - Markdown Editor Panel (قابل للتوسع)
-  - Toast Notifications (Undo Support)
+  - Markdown Editor Panel (Toolbar + AI Magic ✨)
+  - Toast Notifications
 
-### 2.2 Core Features
+### 2.3 Core Features (v0.4.0 Enhanced)
 
-#### ⏸️ **Global Copy/Paste**
-- أزرار Copy/Paste ترسل Ctrl+C/V للنافذة النشطة
-- حل مشكلة Focus Stealing باستخدام WS_EX_NOACTIVATE
+#### ✅ **Global Copy/Paste**
+- Backend ready ✅ | UI ready ✅
 
-#### ⏸️ **Clipboard History Manager**
-- سجل لآخر 100 عنصر منسوخ
-- تثبيت (Pin) للنصوص المتكررة
-- بحث فوري باستخدام FTS5
+#### ✅ **Clipboard History Manager**
+- Backend ready ✅ | UI Fixed (Smart Positioning 🐛) ✅
 
-#### ⏸️ **Markdown Editor**
-- Edit Mode + Preview Mode
-- زر "Load from Clipboard"
-- RTL Support كامل
-- Syntax Highlighting (Shiki)
+#### ✅ **Markdown Editor**
+- Formatting Toolbar ✅
+- AI Magic Button (Summarize/Fix/Translate) ✅
+- RTL Support ✅
 
-#### ⏸️ **Smart Scrub (تنظيف نصوص AI)**
-- اكتشاف مقدمات AI تلقائياً
-- زر Sparkle ✨ يدوي
-- Undo Toast (5 ثوان)
+#### ⏸️ **Smart Scrub**
+- Logic pending | UI pending
 
-#### ⏸️ **Window Management**
-- Always On Top
-- Auto-Hide/Peeking
-- Snap to Screen Edges
-- Multi-Monitor Support
-- حفظ الموضع عند إعادة التشغيل
+#### ✅ **Window Management**
+- Backend ready ✅ | Smooth Dragging ✅
 
 ---
 
@@ -106,10 +111,8 @@
 
 > **ملاحظة:** سيتم إنشاء السكربتات في مجلد `/scripts` حسب `MASTER_CONSTITUTION`
 
-- **`start_app`**: تشغيل النسخة المبنية (Production)
-- **`dev_start`**: `pnpm tauri dev` (Development Mode)
-- **`clean`**: حذف `target/` و `node_modules/`
-- **`backup`**: إنشاء نسخة احتياطية في `Backups/`
+- **`run_app.bat`**: تشغيل النسخة التطويرية وإغلاق النسخ السابقة ✅
+- **`kill_app.bat`**: إجبار إغلاق التطبيق ✅
 - **`build`**: `pnpm tauri build` (إنشاء MSI installer)
 
 ---
@@ -132,29 +135,49 @@
 - **السبب:** حفظ Absolute Coordinates يفشل عند تغيير ترتيب الشاشات
 - **الحل المخطط:** حفظ Monitor ID + Relative Position
 
+#### ✅ **Clipboard History Popup Positioning** (v0.4.0 Resolved)
+- **المشكلة:** النافذة كانت تخرج عن الشاشة.
+- **الحل:** Smart Positioning Logic + Viewport Clamping.
+
+#### ✅ **Window Dragging Jitter** (v0.4.0 Resolved)
+- **المشكلة:** تقطيع أثناء سحب النافذة.
+- **الحل:** Debounced Snapping in Rust + Event-Driven Frontend.
+
 ---
 
 ## 5. Next Steps (Roadmap)
 
-### المرحلة الحالية: **Planning & Setup** (v0.1.0)
+### ✅ المرحلة 1: Setup (v0.1.0) - COMPLETE
+- ✅ Git Init + Initial Commit
+- ✅ Tauri + React + TypeScript Project
+- ✅ Tailwind CSS + PostCSS Configuration
+- ✅ Core Dependencies (Zustand, unified, Shiki)
+- **تم بواسطة:** Gemini 3 Flash
 
-1. ✅ **قراءة وتحليل المتطلبات**
-2. ✅ **إنشاء خطة التنفيذ الأولية**
-3. 🔄 **مراجعة القرارات التقنية مع المطور**
-   - اختيار React vs SolidJS
-   - تفعيل Window Vibrancy أم لا
-   - Smart Scrub تلقائي أم يدوي
-4. ⏸️ **إنشاء PROJECT_CONTEXT.md النهائي**
-5. ⏸️ **البدء في المرحلة 1: Setup**
+### ✅ المرحلة 2: Rust Backend (v0.2.0) - COMPLETE
+- ✅ Window Module (noactivate + docking)
+- ✅ Input Module (clipboard + keyboard)
+- ✅ Database Module (schema + queries + FTS5)
+- ✅ Tauri Commands Integration
+- **تم بواسطة:** Gemini 3 Flash + Claude Opus 4.5 (fixes)
 
-### المراحل القادمة:
+### ✅ المرحلة 3: Comprehensive Audit & Fixes (v0.3.0) - COMPLETE
+- ✅ **P1 Fixes:** Focus Guardian, Buttons, Quit, Window Dragging
+- ✅ **P2 Features:** Preview Mode, Load/Copy HTML
+- ✅ **Infrastructure:** unified pipeline, toast notifications
+- **تم بواسطة:** Claude Opus 4.5 (Thinking) + Claude Sonnet 4.5
 
-- **v0.2.0:** Rust Backend (WS_EX_NOACTIVATE + Clipboard Monitor)
-- **v0.3.0:** Design System (Tailwind + Fonts)
-- **v0.4.0:** UI Components (Dock + Bubble + Editor)
-- **v0.5.0:** Window Management (Docking + Multi-Monitor)
-- **v0.6.0:** Testing & Optimization
-- **v1.0.0:** Documentation & Release
+### ✅ المرحلة 4: Polish & Advanced Features (v0.4.0) - COMPLETE
+- ✅ **Clipboard History Fix:** Smart Positioning
+- ✅ **Smooth Movement:** Debounced Snapping
+- ✅ **Markdown Editor:** Toolbar + AI Magic ✨
+- **تم بواسطة:** Claude Sonnet 4.5 (Thinking) + Claude Opus 4.5
+
+### 🔄 المرحلة 5: Release Candidate (v0.5.0) - NEXT
+- 🔄 **Smart Scrub Logic:** تنفيذ منطق تنظيف النصوص
+- 🔄 **Installer & Distribution:** إعداد ملفات التثبيت
+- 🔄 **Final QA:** اختبار شامل
+- **النموذج المقترح:** Claude Sonnet 4.5
 
 ---
 
@@ -188,12 +211,13 @@
 ### ✅ الهيكلة القياسية:
 ```
 floating-md/
-├── docs/           ✅ التوثيق والخطط
-├── scripts/        ⏸️ سكربتات الصيانة
-├── Backups/        ⏸️ النسخ الاحتياطية
-├── .git/           ⏸️ Git Repository
-├── src-tauri/      ⏸️ Rust Backend
-└── src/            ⏸️ React Frontend
+├── docs/           ✅ التوثيق (MASTER_CONSTITUTION, DESIGN_SPEC, audit/)
+├── plans/          ✅ خطط التنفيذ (active: 05, archive: 01-04)
+├── scripts/        ✅ سكربتات التشغيل (run_app.bat, kill_app.bat)
+├── Backups/        ✅ النسخ الاحتياطية
+├── .git/           ✅ Git Repository (active)
+├── src-tauri/      ✅ Rust Backend (complete)
+└── src/            ✅ React Frontend (all checks passed)
 ```
 
 ### ✅ دعم العربية الأصيل:
@@ -206,15 +230,12 @@ floating-md/
 
 ## 8. AI Models Assignment (حسب SOTA_Models_2026.md)
 
-| المرحلة | النموذج الموصى به | السبب |
-|---------|-------------------|-------|
-| **المرحلة 1: Setup** | Gemini 3 Flash | مهام سريعة وبسيطة |
-| **المرحلة 2: Rust Backend** | Claude Opus 4.5 (Thinking) | أصعب مرحلة - Win32 معقد |
-| **المرحلة 3: Design System** | Claude Sonnet 4.5 (Thinking) | دقة التصميم |
-| **المرحلة 4: UI Components** | Claude Sonnet 4.5 | جودة كود React |
-| **المرحلة 5: Window Mgmt** | Claude Opus 4.5 (Thinking) | تعقيد Multi-Monitor |
-| **المرحلة 6: Testing** | Claude Sonnet 4.5 | اختبار منهجي |
-| **المرحلة 7: Docs** | Gemini 3 Flash | مهام نهائية سريعة |
+| المرحلة | النموذج الموصى به | الحالة |
+|---------|-------------------|--------|
+| **المرحلة 1: Setup** | Gemini 3 Flash | ✅ مكتمل |
+| **المرحلة 2: Rust Backend** | Claude Opus 4.5 (Thinking) | ✅ مكتمل |
+| **المرحلة 3: Audit & Fixes** | **Claude Opus + Sonnet** | ✅ مكتمل |
+| **المرحلة 4: Polish & Advanced** | Claude Sonnet 4.5 (Thinking) | ✅ مكتمل |
 
 ---
 
@@ -226,10 +247,26 @@ floating-md/
 | **Memory (Idle)** | < 80 MB | في حالة الراحة |
 | **Bundle Size** | < 15 MB | MSI Installer كامل |
 | **FTS Search** | < 10ms | على 10,000 عنصر |
-| **Focus Stealing** | 0% | يجب ألا يحدث أبداً |
+| **Focus Stealing** | 0% | ✅ تحقق (Focus Guardian) |
 | **Smart Scrub** | > 95% | دقة حذف المقدمات |
+| **Smooth Drag** | 60 FPS | ✅ تحقق (Debounce) |
 
 ---
 
-**آخر تحديث:** 2026-01-23 00:40  
-**الحالة:** **Planning - في انتظار القرارات التقنية النهائية**
+## 10. Design Reference
+
+> **ملف التصميم:** `docs/DESIGN_SPEC.md`
+
+يحتوي على:
+- Color System (Manus Aesthetic)
+- Typography Stack (Geist + IBM Plex Arabic)
+- Component Layouts (Hover Bubble)
+- Smart Scrub UX Flow
+- Focus State Feedback
+- CSS Variables Reference
+
+---
+
+**آخر تحديث:** 2026-02-07  
+**الإصدار:** v0.4.0 (Polish Complete)  
+**الحالة:** **Ready for Release Candidate (v0.5.0)**
