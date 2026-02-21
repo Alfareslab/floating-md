@@ -14,7 +14,16 @@ pub mod ai;
 
 use std::sync::Mutex;
 use rusqlite::Connection;
-use tauri::{Manager, State};
+use tauri::{Manager, State, Emitter}; // Added Emitter
+use std::sync::atomic::{AtomicI64, AtomicBool, Ordering};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+static LAST_MOVE_TIME: AtomicI64 = AtomicI64::new(0);
+static IS_DOCKING_CHECK_ACTIVE: AtomicBool = AtomicBool::new(false);
+
+fn current_time_ms() -> i64 {
+    SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis() as i64
+}
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
 
@@ -168,11 +177,90 @@ async fn set_editor_mode(window: tauri::Window, is_editor: bool) -> Result<(), S
     log::info!("Set editor mode: {}", is_editor);
     Ok(())
 }
+
+#[tauri::command]
+async fn resize_for_history(window: tauri::Window, open: bool, dock_side: String) -> Result<(), String> {
+    use tauri::LogicalSize;
+    
+    // Default Dimensions
+    let toolbar_h_w = 600;
+    let toolbar_h_h = 80;
+    
+    let toolbar_v_w = 80;
+    let toolbar_v_h = 600;
+    
+    let popup_size = 320; // Width/Height of popup
+    
+    let is_vertical = dock_side == "left" || dock_side == "right";
+    
+    // Get current position
+    let pos = window.outer_position().map_err(|e| e.to_string())?;
+    
+    if open {
+        if is_vertical {
+            // Expand Width: 80 + 320 = 400
+            let new_width = toolbar_v_w + popup_size;
+            
+            // If Docked RIGHT, we must move X to the LEFT by the expansion amount
+            if dock_side == "right" {
+                 let expansion = popup_size; // 320
+                 let new_x = pos.x - expansion as i32;
+                 window.set_position(tauri::LogicalPosition::new(new_x, pos.y))
+                    .map_err(|e| format!("Failed to move window: {}", e))?;
+            }
+            
+            window.set_size(LogicalSize::new(new_width, toolbar_v_h))
+                .map_err(|e| format!("Failed to resize: {}", e))?;
+        } else {
+            // Expand Height: 80 + 320 = 400
+            let new_height = toolbar_h_h + popup_size;
+            
+             // If Docked BOTTOM, we must move Y UP by the expansion amount
+            if dock_side == "bottom" {
+                 let expansion = popup_size; // 320
+                 let new_y = pos.y - expansion as i32;
+                 window.set_position(tauri::LogicalPosition::new(pos.x, new_y))
+                    .map_err(|e| format!("Failed to move window: {}", e))?;
+            }
+
+            window.set_size(LogicalSize::new(toolbar_h_w, new_height))
+                .map_err(|e| format!("Failed to resize: {}", e))?;
+        }
+    } else {
+        // Restore
+        if is_vertical {
+            // If Docked RIGHT, move X back RIGHT
+            if dock_side == "right" {
+                 let expansion = popup_size; // 320
+                 let new_x = pos.x + expansion as i32;
+                 window.set_position(tauri::LogicalPosition::new(new_x, pos.y))
+                    .map_err(|e| format!("Failed to move window: {}", e))?;
+            }
+        
+             window.set_size(LogicalSize::new(toolbar_v_w, toolbar_v_h))
+                .map_err(|e| format!("Failed to restore: {}", e))?;
+        } else {
+             // If Docked BOTTOM, move Y back DOWN
+            if dock_side == "bottom" {
+                 let expansion = popup_size; // 320
+                 let new_y = pos.y + expansion as i32;
+                 window.set_position(tauri::LogicalPosition::new(pos.x, new_y))
+                    .map_err(|e| format!("Failed to move window: {}", e))?;
+            }
+
+             window.set_size(LogicalSize::new(toolbar_h_w, toolbar_h_h))
+                .map_err(|e| format!("Failed to restore: {}", e))?;
+        }
+    }
+    
+    Ok(())
+}
+
 // ... (imports)
 
-/// Check and dock window to nearest edge
-#[tauri::command]
-fn check_and_dock(window: tauri::Window) -> Result<String, String> {
+// ... (imports)
+
+fn perform_docking(window: tauri::Window) -> Result<String, String> {
     #[cfg(windows)]
     {
         // Get current position and size
@@ -218,15 +306,32 @@ fn check_and_dock(window: tauri::Window) -> Result<String, String> {
         let hwnd = window.hwnd().map_err(|e| e.to_string())?.0 as isize;
         window::set_window_position(hwnd, &pos_struct)?;
         
-        // Return new orientation for frontend
-        match dock {
-            crate::window::DockPosition::Top | crate::window::DockPosition::Bottom => Ok("horizontal".to_string()),
-            _ => Ok("vertical".to_string()),
-        }
+        let dock_side = match dock {
+            window::DockPosition::Top => "top",
+            window::DockPosition::Bottom => "bottom",
+            window::DockPosition::Left => "left",
+            window::DockPosition::Right => "right",
+            window::DockPosition::Float => "right", // Default to vertical/right for floating
+        };
+        
+        // Save state for restoration
+        let mut saved = SAVED_TOOLBAR_POSITION.lock().unwrap();
+        *saved = Some((new_x, new_y, w as u32, h as u32));
+        
+        Ok(dock_side.to_string())
     }
     #[cfg(not(windows))]
-    Ok("none".to_string())
+    {
+        Err("Docking is only available on Windows".to_string())
+    }
 }
+
+/// Check and dock window to nearest edge
+#[tauri::command]
+fn check_and_dock(window: tauri::Window) -> Result<String, String> {
+    perform_docking(window)
+}
+
 
 /// Toggle editor mode
 /// Instead of opening a separate window, this emits an event to the frontend
@@ -458,6 +563,43 @@ pub fn run() {
     
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::Moved(_) = event {
+                // Update last move time
+                LAST_MOVE_TIME.store(current_time_ms(), Ordering::Relaxed);
+                
+                // If no checker is running, start one
+                if !IS_DOCKING_CHECK_ACTIVE.load(Ordering::Relaxed) {
+                    IS_DOCKING_CHECK_ACTIVE.store(true, Ordering::Relaxed);
+                    let w = window.clone();
+                    
+                    tauri::async_runtime::spawn(async move {
+                        loop {
+                            // Check frequently (50ms)
+                            tokio::time::sleep(Duration::from_millis(50)).await;
+                            
+                            let last = LAST_MOVE_TIME.load(Ordering::Relaxed);
+                            let now = current_time_ms();
+                            
+                            // 200ms debounce: If no move for 200ms, assume drag ended
+                            if now - last > 200 {
+                                log::info!("Drag ended (debounced), performing snap...");
+                                
+                                if let Ok(orientation) = perform_docking(w.clone()) {
+                                    // Emit event to frontend
+                                    if let Err(e) = w.emit("snap-update", orientation) {
+                                        log::error!("Failed to emit snap-update: {}", e);
+                                    }
+                                }
+                                
+                                IS_DOCKING_CHECK_ACTIVE.store(false, Ordering::Relaxed);
+                                break;
+                            }
+                        }
+                    });
+                }
+            }
+        })
         .setup(|app| {
             // Get app data directory
             let app_data_dir = app.path().app_data_dir()
@@ -489,6 +631,7 @@ pub fn run() {
             set_position,
             resize_window,
             set_editor_mode,
+            resize_for_history,
             // Clipboard commands
             send_copy,
             send_paste,

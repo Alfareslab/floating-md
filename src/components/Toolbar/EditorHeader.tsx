@@ -65,6 +65,7 @@ export const EditorHeader: React.FC<EditorHeaderProps> = ({ onToggleEditor }) =>
                 isOpen={historyOpen}
                 onClose={() => setHistoryOpen(false)}
                 onSelect={handleHistorySelect}
+                dockSide="top"
             />
 
             {/* Header Content */}

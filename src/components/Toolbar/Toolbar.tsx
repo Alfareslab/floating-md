@@ -7,6 +7,7 @@ import { ClipboardHistory } from '../Clipboard/ClipboardHistory';
 
 interface ToolbarProps {
     orientation: 'horizontal' | 'vertical';
+    dockSide: 'top' | 'bottom' | 'left' | 'right';
     className?: string;
     onToggleEditor?: () => void;
     mode?: 'toolbar' | 'editor';
@@ -14,6 +15,7 @@ interface ToolbarProps {
 
 export const Toolbar: React.FC<ToolbarProps> = ({
     orientation,
+    dockSide,
     className = '',
     onToggleEditor,
     mode = 'toolbar'
@@ -45,16 +47,39 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         };
     }, [show]);
 
+    // Handle Window Resize for History Popup
+    React.useEffect(() => {
+        // Only resize in toolbar mode (Editor has its own sizing)
+        if (mode === 'editor') return;
+
+        const resizeWindow = async () => {
+            try {
+                const { invoke } = await import('@tauri-apps/api/core');
+                // Pass dock_side (snake_case) to rust
+                await invoke('resize_for_history', { open: historyOpen, dockSide: dockSide });
+                console.log(`Resized window for history: ${historyOpen} (${dockSide})`);
+            } catch (error) {
+                console.error('Failed to resize window for history:', error);
+            }
+        };
+        resizeWindow();
+    }, [historyOpen, dockSide, mode]);
+
     const handleItemClick = async (item: ToolbarItem) => {
         if (item.type === 'separator') return;
 
-        // Special handling for markdown button
+        // Special handling for markdown button (doesn't need focus preservation)
         if (item.id === 'markdown' && onToggleEditor) {
             onToggleEditor();
             return;
         }
 
         try {
+            // 🛡️ Focus Guardian: Save the current foreground window before action
+            const { invoke } = await import('@tauri-apps/api/core');
+            await invoke('save_foreground');
+
+            // Execute the action
             await item.action();
         } catch (error) {
             console.error(`Error executing ${item.id}:`, error);
@@ -86,26 +111,50 @@ export const Toolbar: React.FC<ToolbarProps> = ({
                 isOpen={historyOpen}
                 onClose={() => setHistoryOpen(false)}
                 onSelect={handleHistorySelect}
+                dockSide={dockSide}
             />
 
             {/* Main Toolbar */}
             <div
-                data-tauri-drag-region
                 onMouseEnter={show}
                 onMouseLeave={startHideTimer}
                 className={`
-            flex items-center gap-3 ${isEditor ? 'p-2' : 'p-3'}
-            ${containerClasses}
-            ${visibilityClasses}
-            ${className}
-          `}
+                    relative
+                    flex items-center gap-3 ${isEditor ? 'p-2' : 'p-3'}
+                    ${containerClasses}
+                    ${visibilityClasses}
+                    ${className}
+                `}
             >
-                {/* Toolbar Items */}
+                {/* Drag Region - Behind buttons (z-index: -10) */}
+                <div
+                    data-tauri-drag-region
+                    className="absolute inset-0 -z-10"
+                />
+
+
+                {/* Toolbar Items - Foreground layer for button clicks */}
                 <div
                     className={`
-              flex items-center gap-2 w-full h-full
-              ${orientation === 'horizontal' ? 'flex-row' : 'flex-col'}
-            `}
+                        relative z-10
+                        flex items-center gap-2 w-full h-full
+                        ${orientation === 'horizontal' ? 'flex-row' : 'flex-col'}
+                        ${
+                        // If Horizontal:
+                        // Top/Bottom docking doesn't change horizontal alignment (centered by default width? No w-full)
+                        // But for Vertical docking:
+                        // If docked RIGHT, we want items to be aligned to the RIGHT side of the container (since container expanded left)
+                        // But flex-col doesn't use 'justify-end' for horizontal alignment, it uses 'items-end'
+                        orientation === 'vertical' && dockSide === 'right' ? 'items-end' :
+                            orientation === 'vertical' && dockSide === 'left' ? 'items-start' : 'items-center'
+                        }
+                         ${
+                        // If docked BOTTOM, we want items at the BOTTOM of container (since container expanded up)
+                        // If docked TOP, at TOP.
+                        orientation === 'horizontal' && dockSide === 'bottom' ? 'items-end' :
+                            orientation === 'horizontal' && dockSide === 'top' ? 'items-start' : 'items-center'
+                        }
+                    `}
                 >
                     {items.map((item) => {
                         if (item.type === 'separator') {

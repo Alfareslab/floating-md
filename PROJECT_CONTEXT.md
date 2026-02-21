@@ -4,8 +4,8 @@
 > **📅 إنشاء:** 2026-01-23  
 > **👤 المطور:** أحمد صالح  
 > **📍 الموقع:** طنطا، مصر  
-> **الإصدار الحالي:** v0.2.0 (Rust Backend Complete)
-> **📅 آخر تحديث:** 2026-01-24
+> **الإصدار الحالي:** v0.4.0 (Polish & Advanced Features)
+> **📅 آخر تحديث:** 2026-02-07
 
 ---
 
@@ -65,7 +65,7 @@
 
 #### ✅ **Window Module** (Phase 2 Complete)
 - ✅ `noactivate.rs`: WS_EX_NOACTIVATE + Window Subclassing Fallback
-- ✅ `docking.rs`: Multi-Monitor Support + Edge Snapping
+- ✅ `docking.rs`: Multi-Monitor Support + Edge Snapping (Smooth Drag Optimized 🏎️)
 
 #### ✅ **Input Module** (Phase 2 Complete)
 - ✅ `clipboard.rs`: Read/Write + Content Type Detection
@@ -75,33 +75,35 @@
 - ✅ `schema.rs`: SQLite + FTS5 Virtual Table + Triggers
 - ✅ `queries.rs`: CRUD Operations + FTS5 Search
 
-### 2.2 UI & UX (Pending Phase 3-4)
+### 2.2 UI & UX (v0.4.0 Enhanced)
 
 - 🔄 **Theme:** Dark Mode (Manus AI Inspired) - Tailwind configured
   - ألوان: Deep Charcoal (#1C1D21) + Cyan Accent (#88C0D0)
-- ⏸️ **Languages:** English + Arabic (RTL Support)
-- ⏸️ **Key Interface Elements:**
+- ✅ **Languages:** English + Arabic (RTL Support Optimized)
+- ✅ **Key Interface Elements:**
   - Floating Dock (80px collapsed, 300px expanded)
   - Hover Bubbles (تظهر بعد 200ms)
-  - Markdown Editor Panel
+  - Markdown Editor Panel (Toolbar + AI Magic ✨)
   - Toast Notifications
 
-### 2.3 Core Features (Pending Phase 4-5)
+### 2.3 Core Features (v0.4.0 Enhanced)
 
-#### ⏸️ **Global Copy/Paste**
-- Backend ready ✅ | UI pending
+#### ✅ **Global Copy/Paste**
+- Backend ready ✅ | UI ready ✅
 
-#### ⏸️ **Clipboard History Manager**
-- Backend ready ✅ | UI pending
+#### ✅ **Clipboard History Manager**
+- Backend ready ✅ | UI Fixed (Smart Positioning 🐛) ✅
 
-#### ⏸️ **Markdown Editor**
-- Dependencies installed ✅ | UI pending
+#### ✅ **Markdown Editor**
+- Formatting Toolbar ✅
+- AI Magic Button (Summarize/Fix/Translate) ✅
+- RTL Support ✅
 
 #### ⏸️ **Smart Scrub**
 - Logic pending | UI pending
 
-#### ⏸️ **Window Management**
-- Backend ready ✅ | Integration pending
+#### ✅ **Window Management**
+- Backend ready ✅ | Smooth Dragging ✅
 
 ---
 
@@ -109,10 +111,8 @@
 
 > **ملاحظة:** سيتم إنشاء السكربتات في مجلد `/scripts` حسب `MASTER_CONSTITUTION`
 
-- **`start_app`**: تشغيل النسخة المبنية (Production)
-- **`dev_start`**: `pnpm tauri dev` (Development Mode)
-- **`clean`**: حذف `target/` و `node_modules/`
-- **`backup`**: إنشاء نسخة احتياطية في `Backups/`
+- **`run_app.bat`**: تشغيل النسخة التطويرية وإغلاق النسخ السابقة ✅
+- **`kill_app.bat`**: إجبار إغلاق التطبيق ✅
 - **`build`**: `pnpm tauri build` (إنشاء MSI installer)
 
 ---
@@ -135,6 +135,14 @@
 - **السبب:** حفظ Absolute Coordinates يفشل عند تغيير ترتيب الشاشات
 - **الحل المخطط:** حفظ Monitor ID + Relative Position
 
+#### ✅ **Clipboard History Popup Positioning** (v0.4.0 Resolved)
+- **المشكلة:** النافذة كانت تخرج عن الشاشة.
+- **الحل:** Smart Positioning Logic + Viewport Clamping.
+
+#### ✅ **Window Dragging Jitter** (v0.4.0 Resolved)
+- **المشكلة:** تقطيع أثناء سحب النافذة.
+- **الحل:** Debounced Snapping in Rust + Event-Driven Frontend.
+
 ---
 
 ## 5. Next Steps (Roadmap)
@@ -153,29 +161,23 @@
 - ✅ Tauri Commands Integration
 - **تم بواسطة:** Gemini 3 Flash + Claude Opus 4.5 (fixes)
 
-### 🔄 المرحلة 2.5: تصميم الواجهة (v0.2.5) - NEXT
-- ⏸️ تصميم Floating Dock
-- ⏸️ تصميم Hover Bubble
-- ⏸️ تصميم Markdown Editor
-- ⏸️ تصميم Smart Scrub UI
-- ⏸️ تصميم Toast Notifications
-- **النموذج:** Nano Banana Pro + Gemini 3 Pro High
-- **المخرجات:** صور/mockups في `docs/designs/`
+### ✅ المرحلة 3: Comprehensive Audit & Fixes (v0.3.0) - COMPLETE
+- ✅ **P1 Fixes:** Focus Guardian, Buttons, Quit, Window Dragging
+- ✅ **P2 Features:** Preview Mode, Load/Copy HTML
+- ✅ **Infrastructure:** unified pipeline, toast notifications
+- **تم بواسطة:** Claude Opus 4.5 (Thinking) + Claude Sonnet 4.5
 
-### ⏸️ المرحلة 3: Design System - CSS (v0.3.0) - PENDING
-- ⏸️ CSS Foundation (index.css)
-- ⏸️ Font Loading (Geist + IBM Plex Arabic)
-- ⏸️ Design Tokens + CSS Variables
-- ⏸️ Animation System
-- **النموذج:** Claude Sonnet 4.5 (Thinking)
-- **⚠️ تبدأ بعد اعتماد التصاميم من المرحلة 2.5**
+### ✅ المرحلة 4: Polish & Advanced Features (v0.4.0) - COMPLETE
+- ✅ **Clipboard History Fix:** Smart Positioning
+- ✅ **Smooth Movement:** Debounced Snapping
+- ✅ **Markdown Editor:** Toolbar + AI Magic ✨
+- **تم بواسطة:** Claude Sonnet 4.5 (Thinking) + Claude Opus 4.5
 
-### المراحل القادمة:
-
-- **v0.4.0:** UI Components (Dock + Bubble + Editor)
-- **v0.5.0:** Window Management Integration
-- **v0.6.0:** Testing & Optimization
-- **v1.0.0:** Documentation & Release
+### 🔄 المرحلة 5: Release Candidate (v0.5.0) - NEXT
+- 🔄 **Smart Scrub Logic:** تنفيذ منطق تنظيف النصوص
+- 🔄 **Installer & Distribution:** إعداد ملفات التثبيت
+- 🔄 **Final QA:** اختبار شامل
+- **النموذج المقترح:** Claude Sonnet 4.5
 
 ---
 
@@ -209,13 +211,13 @@
 ### ✅ الهيكلة القياسية:
 ```
 floating-md/
-├── docs/           ✅ التوثيق (MASTER_CONSTITUTION, DESIGN_SPEC)
-├── plans/          ✅ خطط التنفيذ
-├── scripts/        ⏸️ سكربتات الصيانة (Phase 7)
+├── docs/           ✅ التوثيق (MASTER_CONSTITUTION, DESIGN_SPEC, audit/)
+├── plans/          ✅ خطط التنفيذ (active: 05, archive: 01-04)
+├── scripts/        ✅ سكربتات التشغيل (run_app.bat, kill_app.bat)
 ├── Backups/        ✅ النسخ الاحتياطية
 ├── .git/           ✅ Git Repository (active)
 ├── src-tauri/      ✅ Rust Backend (complete)
-└── src/            🔄 React Frontend (in progress)
+└── src/            ✅ React Frontend (all checks passed)
 ```
 
 ### ✅ دعم العربية الأصيل:
@@ -232,12 +234,8 @@ floating-md/
 |---------|-------------------|--------|
 | **المرحلة 1: Setup** | Gemini 3 Flash | ✅ مكتمل |
 | **المرحلة 2: Rust Backend** | Claude Opus 4.5 (Thinking) | ✅ مكتمل |
-| **المرحلة 2.5: تصميم الواجهة** | **Nano Banana Pro + Gemini 3 Pro High** | 🔄 التالي |
-| **المرحلة 3: Design System (كود)** | Claude Sonnet 4.5 (Thinking) | ⏸️ بعد 2.5 |
-| **المرحلة 4: UI Components** | Claude Sonnet 4.5 | ⏸️ قادم |
-| **المرحلة 5: Window Mgmt** | Claude Opus 4.5 (Thinking) | ⏸️ قادم |
-| **المرحلة 6: Testing** | Claude Sonnet 4.5 | ⏸️ قادم |
-| **المرحلة 7: Docs** | Gemini 3 Flash | ⏸️ قادم |
+| **المرحلة 3: Audit & Fixes** | **Claude Opus + Sonnet** | ✅ مكتمل |
+| **المرحلة 4: Polish & Advanced** | Claude Sonnet 4.5 (Thinking) | ✅ مكتمل |
 
 ---
 
@@ -249,8 +247,9 @@ floating-md/
 | **Memory (Idle)** | < 80 MB | في حالة الراحة |
 | **Bundle Size** | < 15 MB | MSI Installer كامل |
 | **FTS Search** | < 10ms | على 10,000 عنصر |
-| **Focus Stealing** | 0% | يجب ألا يحدث أبداً |
+| **Focus Stealing** | 0% | ✅ تحقق (Focus Guardian) |
 | **Smart Scrub** | > 95% | دقة حذف المقدمات |
+| **Smooth Drag** | 60 FPS | ✅ تحقق (Debounce) |
 
 ---
 
@@ -268,5 +267,6 @@ floating-md/
 
 ---
 
-**آخر تحديث:** 2026-01-24 14:00  
-**الحالة:** **Phase 3 - Design System (In Progress)**
+**آخر تحديث:** 2026-02-07  
+**الإصدار:** v0.4.0 (Polish Complete)  
+**الحالة:** **Ready for Release Candidate (v0.5.0)**

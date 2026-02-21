@@ -19,12 +19,14 @@ interface ClipboardHistoryProps {
     isOpen: boolean;
     onClose: () => void;
     onSelect: (content: string) => void;
+    dockSide: 'top' | 'bottom' | 'left' | 'right';
 }
 
 export const ClipboardHistory: React.FC<ClipboardHistoryProps> = ({
     isOpen,
     onClose,
     onSelect,
+    dockSide
 }) => {
     const [entries, setEntries] = useState<ClipboardEntry[]>([]);
     const [loading, setLoading] = useState(false);
@@ -74,10 +76,30 @@ export const ClipboardHistory: React.FC<ClipboardHistoryProps> = ({
 
     if (!isOpen) return null;
 
+    // Calculate Position based on Dock Side
+    let positionClasses = '';
+
+    switch (dockSide) {
+        case 'left':
+            positionClasses = 'top-0 left-[90px] h-[600px] w-80'; // To the right of toolbar
+            break;
+        case 'right':
+            positionClasses = 'top-0 right-[90px] h-[600px] w-80'; // To the left of toolbar
+            break;
+        case 'top':
+            positionClasses = 'top-[80px] left-0 w-[600px] h-80'; // Below toolbar, reduced gap
+            break;
+        case 'bottom':
+            positionClasses = 'bottom-[80px] left-0 w-[600px] h-80'; // Above toolbar
+            break;
+        default:
+            positionClasses = 'top-[80px] left-0 w-[600px] h-80'; // Fallback
+    }
+
     return (
-        <div className="absolute bottom-full left-0 mb-2 w-72 max-h-80 overflow-y-auto
+        <div className={`absolute ${positionClasses}
                         bg-black/80 backdrop-blur-xl rounded-xl border border-white/10
-                        shadow-2xl z-50">
+                        shadow-2xl z-50 flex flex-col`}>
             {/* Header */}
             <div className="flex items-center justify-between p-3 border-b border-white/10">
                 <div className="flex items-center gap-2 text-white/80">

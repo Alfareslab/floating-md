@@ -1,37 +1,24 @@
 import { useEffect } from 'react';
-import { invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
 
-/**
- * Hook to handle window docking and snap-to-edge logic
- * Polls the backend every 1500ms to check if window should snap to an edge.
- * The backend now uses "magnetic" behavior - always snapping to nearest edge.
- * 
- * @param onOrientationChange - Callback when orientation changes
- * @param enabled - Whether docking should be active (false in editor mode)
- */
+export type DockSide = 'top' | 'bottom' | 'left' | 'right';
+
 export const useDocking = (
-    onOrientationChange: (orientation: 'horizontal' | 'vertical') => void,
+    onDockChange: (orientation: 'horizontal' | 'vertical', side: DockSide) => void,
     enabled: boolean = true
 ) => {
     useEffect(() => {
-        // Don't run docking logic if disabled (e.g., in editor mode)
-        if (!enabled) {
-            console.log("useDocking: DISABLED (editor mode)");
-            return;
-        }
+        if (!enabled) return;
 
-        console.log("useDocking: ENABLED (toolbar mode)");
+        // Listen for snap updates from backend (triggered after window move)
+        const unlistenPromise = listen<string>('snap-update', (event) => {
+            const side = event.payload as DockSide;
+            const orientation = (side === 'top' || side === 'bottom') ? 'horizontal' : 'vertical';
+            onDockChange(orientation, side);
+        });
 
-        // Poll for docking status every 1500ms
-        const intervalId = setInterval(async () => {
-            try {
-                const orientation = await invoke<string>('check_and_dock');
-                onOrientationChange(orientation as 'horizontal' | 'vertical');
-            } catch (error) {
-                console.error("Docking check failed:", error);
-            }
-        }, 1500);
-
-        return () => clearInterval(intervalId);
-    }, [onOrientationChange, enabled]);
+        return () => {
+            unlistenPromise.then(unlisten => unlisten());
+        };
+    }, [onDockChange, enabled]);
 };

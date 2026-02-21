@@ -71,7 +71,7 @@ export function detectContentType(text: string): 'text' | 'code' | 'markdown' {
 export function isolateCodeInRTL(text: string): string {
     // Find code patterns and wrap them with LTR marks
     const codePattern = /`([^`]+)`/g;
-    return text.replace(codePattern, (match, code) => {
+    return text.replace(codePattern, (match, _code) => {
         return `\u202A${match}\u202C`; // LTR embedding
     });
 }

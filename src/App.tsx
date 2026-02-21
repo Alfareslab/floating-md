@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Toolbar } from './components/Toolbar/Toolbar';
 import { MarkdownEditor } from './components/Editor/MarkdownEditor';
 import { useDocking } from './hooks/useDocking';
+import { invoke } from '@tauri-apps/api/core';
 
 /**
  * Main App Component
@@ -14,27 +15,29 @@ import { useDocking } from './hooks/useDocking';
  */
 function App() {
   const [orientation, setOrientation] = useState<'horizontal' | 'vertical'>('vertical');
+  const [dockSide, setDockSide] = useState<'top' | 'bottom' | 'left' | 'right'>('left');
   const [mode, setMode] = useState<'toolbar' | 'editor'>('toolbar');
 
   // Store previous state for restoration when closing editor
   const [previousState, setPreviousState] = useState<{
     orientation: 'horizontal' | 'vertical';
+    dockSide: 'top' | 'bottom' | 'left' | 'right';
   } | null>(null);
 
-  // Enable auto-docking logic (only in toolbar mode)
-  // When in editor mode, docking is disabled to prevent resizing
-  useDocking(setOrientation, mode === 'toolbar');
+  // ... (Focus Guardian useEffect remains same)
 
-  // NOTE: We removed the toggle-editor-mode event listener because
-  // we now call onToggleEditor directly from Toolbar.tsx
-  // This prevents the double-toggle issue.
+  // Enable auto-docking logic (only in toolbar mode)
+  useDocking((newOrientation, newSide) => {
+    setOrientation(newOrientation);
+    setDockSide(newSide);
+  }, mode === 'toolbar');
+
+  // ... (Toggle logic)
 
   // Toggle function for internal use
   const handleToggleEditor = async () => {
-    const { invoke } = await import('@tauri-apps/api/core');
-
     if (mode === 'toolbar') {
-      setPreviousState({ orientation });
+      setPreviousState({ orientation, dockSide });
       setOrientation('horizontal');
       setMode('editor');
       // Resize window to editor size
@@ -42,6 +45,7 @@ function App() {
     } else {
       if (previousState) {
         setOrientation(previousState.orientation);
+        setDockSide(previousState.dockSide);
       }
       setMode('toolbar');
       // Resize window back to toolbar size
@@ -50,13 +54,12 @@ function App() {
   };
 
   // ========== TOOLBAR MODE ==========
-  console.log("Current mode:", mode);
   if (mode === 'toolbar') {
-    console.log("Rendering TOOLBAR MODE");
     return (
-      <div className="w-screen h-screen flex items-center justify-center bg-transparent overflow-hidden">
+      <div className="w-full h-full bg-transparent overflow-hidden">
         <Toolbar
           orientation={orientation}
+          dockSide={dockSide}
           onToggleEditor={handleToggleEditor}
         />
       </div>
@@ -64,16 +67,12 @@ function App() {
   }
 
   // ========== EDITOR MODE ==========
-  // ========== EDITOR MODE ==========
-  // The toolbar becomes the header of the editor panel
-  console.log("Rendering EDITOR MODE");
   return (
-    // Added rounded-3xl to mimic modern OS windows (smooth corners)
-    // border-white/5 for subtle definition
     <div className="w-screen h-screen flex flex-col overflow-hidden bg-base rounded-3xl border border-white/5 shadow-2xl">
       {/* Toolbar as Header */}
       <Toolbar
         orientation="horizontal"
+        dockSide="top" // Editor is always top-oriented
         onToggleEditor={handleToggleEditor}
         mode="editor"
       />

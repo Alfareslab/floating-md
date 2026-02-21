@@ -1,0 +1,70 @@
+[package]
+name = "floating-md"
+version = "0.1.0"
+description = "Floating utility bar for Windows - Copy/Paste without focus stealing"
+authors = ["Ahmed Saleh <developer@floating-md.app>"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "floating_md_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+# Tauri Core
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Windows APIs (Win32) - For WS_EX_NOACTIVATE, Clipboard, SendInput
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = [
+    "Win32_Foundation",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_System_DataExchange",
+    "Win32_System_Memory",
+    "Win32_Graphics_Gdi",
+] }
+
+[dependencies.rusqlite]
+version = "0.32"
+features = ["bundled"]
+
+# Async Runtime
+[dependencies.tokio]
+version = "1"
+features = ["full"]
+
+# Logging
+[dependencies.log]
+version = "0.4"
+
+[dependencies.env_logger]
+version = "0.11"
+
+# Date/Time handling
+[dependencies.chrono]
+version = "0.4"
+features = ["serde"]
+
+[dependencies.regex]
+version = "1.10"
+
+[dependencies.lazy_static]
+version = "1.4"
+
+[dev-dependencies]
+tempfile = "3"
+
+

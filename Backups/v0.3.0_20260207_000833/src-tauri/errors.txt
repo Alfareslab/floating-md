@@ -1,0 +1,956 @@
+﻿cargo :     Checking floating-md v0.1.0 (D:\MyProjects\Copy 
+past floting ai\floating-md\src-tauri)
+At line:1 char:54
++ ... H = "$env:USERPROFILE\.cargo\bin;$env:PATH"; cargo check 
+2>&1 | Out-F ...
++                                                  
+~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Checking fl.. 
+   .g-md\src-tauri):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+error[E0425]: cannot find value `CF_UNICODETEXT` in this scope
+  --> src\input\clipboard.rs:87:39
+   |
+87 |         let handle = GetClipboardData(CF_UNICODETEXT.0 as 
+u32);
+   |                                       ^^^^^^^^^^^^^^ not 
+found in this scope
+
+error[E0425]: cannot find value `CF_UNICODETEXT` in this scope
+   --> src\input\clipboard.rs:165:39
+    |
+165 |         let result = SetClipboardData(CF_UNICODETEXT.0 
+as u32, HANDLE(hmem.0));
+    |                                       ^^^^^^^^^^^^^^ not 
+found in this scope
+
+warning: unused import: `Win32::UI::WindowsAndMessaging::*`
+  --> src\input\clipboard.rs:19:5
+   |
+19 |     Win32::UI::WindowsAndMessaging::*,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of 
+`#[warn(unused)]`) on by default
+
+warning: unused import: `AppHandle`
+  --> src\lib.rs:16:13
+   |
+16 | use tauri::{AppHandle, Manager, State};
+   |             ^^^^^^^^^
+
+warning: unused import: `DockPosition`
+  --> src\lib.rs:19:37
+   |
+19 | use crate::window::{WindowPosition, DockPosition, 
+Monitor};
+   |                                     ^^^^^^^^^^^^
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+  --> src\window\noactivate.rs:39:47
+   |
+39 | pub fn apply_noactivate_style(hwnd: isize) -> Result<(), 
+String> {
+   |                                               ^^^^^^   
+-------- help: remove the unnecessary generic argument
+   |                                               |
+   |                                               expected 1 
+generic argument
+   |
+note: type alias defined here, with 1 generic parameter: `T`
+  --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c6
+b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+   |
+38 | pub type Result<T> = core::result::Result<T, Error>;
+   |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+  --> src\window\noactivate.rs:67:55
+   |
+67 | pub fn subclass_window_for_noactivate(hwnd: isize) -> 
+Result<(), String> {
+   |                                                       
+^^^^^^   -------- help: remove the unnecessary generic argument
+   |                                                       |
+   |                                                       
+expected 1 generic argument
+   |
+note: type alias defined here, with 1 generic parameter: `T`
+  --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c6
+b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+   |
+38 | pub type Result<T> = core::result::Result<T, Error>;
+   |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+   --> src\window\noactivate.rs:154:39
+    |
+154 | pub fn restore_foreground_window() -> Result<(), String> 
+{
+    |                                       ^^^^^^   -------- 
+help: remove the unnecessary generic argument
+    |                                       |
+    |                                       expected 1 generic 
+argument
+    |
+note: type alias defined here, with 1 generic parameter: `T`
+   --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+    |
+ 38 | pub type Result<T> = core::result::Result<T, Error>;
+    |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+   --> src\window\docking.rs:191:71
+    |
+191 | pub fn set_window_position(hwnd: isize, position: 
+&WindowPosition) -> Result<(), String> {
+    |                                                          
+             ^^^^^^   -------- help: remove the unnecessary 
+generic argument
+    |                                                          
+             |
+    |                                                          
+             expected 1 generic argument
+    |
+note: type alias defined here, with 1 generic parameter: `T`
+   --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+    |
+ 38 | pub type Result<T> = core::result::Result<T, Error>;
+    |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+  --> src\input\clipboard.rs:70:32
+   |
+70 | pub fn get_clipboard_text() -> Result<String, String> {
+   |                                ^^^^^^       -------- 
+help: remove the unnecessary generic argument
+   |                                |
+   |                                expected 1 generic argument
+   |
+note: type alias defined here, with 1 generic parameter: `T`
+  --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c6
+b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+   |
+38 | pub type Result<T> = core::result::Result<T, Error>;
+   |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+   --> src\input\clipboard.rs:121:42
+    |
+121 | pub fn set_clipboard_text(text: &str) -> Result<(), 
+String> {
+    |                                          ^^^^^^   
+-------- help: remove the unnecessary generic argument
+    |                                          |
+    |                                          expected 1 
+generic argument
+    |
+note: type alias defined here, with 1 generic parameter: `T`
+   --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+    |
+ 38 | pub type Result<T> = core::result::Result<T, Error>;
+    |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+  --> src\input\keyboard.rs:34:23
+   |
+34 | pub fn send_copy() -> Result<(), String> {
+   |                       ^^^^^^   -------- help: remove the 
+unnecessary generic argument
+   |                       |
+   |                       expected 1 generic argument
+   |
+note: type alias defined here, with 1 generic parameter: `T`
+  --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c6
+b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+   |
+38 | pub type Result<T> = core::result::Result<T, Error>;
+   |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+  --> src\input\keyboard.rs:40:24
+   |
+40 | pub fn send_paste() -> Result<(), String> {
+   |                        ^^^^^^   -------- help: remove the 
+unnecessary generic argument
+   |                        |
+   |                        expected 1 generic argument
+   |
+note: type alias defined here, with 1 generic parameter: `T`
+  --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c6
+b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+   |
+38 | pub type Result<T> = core::result::Result<T, Error>;
+   |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+  --> src\input\keyboard.rs:46:22
+   |
+46 | pub fn send_cut() -> Result<(), String> {
+   |                      ^^^^^^   -------- help: remove the 
+unnecessary generic argument
+   |                      |
+   |                      expected 1 generic argument
+   |
+note: type alias defined here, with 1 generic parameter: `T`
+  --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c6
+b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+   |
+38 | pub type Result<T> = core::result::Result<T, Error>;
+   |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+  --> src\input\keyboard.rs:52:23
+   |
+52 | pub fn send_undo() -> Result<(), String> {
+   |                       ^^^^^^   -------- help: remove the 
+unnecessary generic argument
+   |                       |
+   |                       expected 1 generic argument
+   |
+note: type alias defined here, with 1 generic parameter: `T`
+  --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c6
+b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+   |
+38 | pub type Result<T> = core::result::Result<T, Error>;
+   |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+  --> src\input\keyboard.rs:58:29
+   |
+58 | pub fn send_select_all() -> Result<(), String> {
+   |                             ^^^^^^   -------- help: 
+remove the unnecessary generic argument
+   |                             |
+   |                             expected 1 generic argument
+   |
+note: type alias defined here, with 1 generic parameter: `T`
+  --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c6
+b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+   |
+38 | pub type Result<T> = core::result::Result<T, Error>;
+   |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+  --> src\input\keyboard.rs:68:55
+   |
+68 | pub fn send_key_combo(modifiers: &[u16], key: u16) -> 
+Result<(), String> {
+   |                                                       
+^^^^^^   -------- help: remove the unnecessary generic argument
+   |                                                       |
+   |                                                       
+expected 1 generic argument
+   |
+note: type alias defined here, with 1 generic parameter: `T`
+  --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c6
+b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+   |
+38 | pub type Result<T> = core::result::Result<T, Error>;
+   |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+   --> src\input\keyboard.rs:109:30
+    |
+109 | pub fn send_key(key: u16) -> Result<(), String> {
+    |                              ^^^^^^   -------- help: 
+remove the unnecessary generic argument
+    |                              |
+    |                              expected 1 generic argument
+    |
+note: type alias defined here, with 1 generic parameter: `T`
+   --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+    |
+ 38 | pub type Result<T> = core::result::Result<T, Error>;
+    |          ^^^^^^ -
+
+error[E0107]: type alias takes 1 generic argument but 2 
+generic arguments were supplied
+   --> src\input\keyboard.rs:129:35
+    |
+129 | pub fn type_string(text: &str) -> Result<(), String> {
+    |                                   ^^^^^^   -------- 
+help: remove the unnecessary generic argument
+    |                                   |
+    |                                   expected 1 generic 
+argument
+    |
+note: type alias defined here, with 1 generic parameter: `T`
+   --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-result-0.2.0\src\lib.rs:38:10
+    |
+ 38 | pub type Result<T> = core::result::Result<T, Error>;
+    |          ^^^^^^ -
+
+error[E0277]: `?` couldn't convert the error to 
+`std::string::String`
+  --> src\lib.rs:34:56
+   |
+34 |         window::apply_noactivate_style(hwnd.0 as isize)?;
+   |         -----------------------------------------------^ 
+the trait `From<windows_result::error::Error>` is not 
+implemented for `std::string::String`
+   |         |
+   |         this can't be annotated with `?` because it has 
+type `Result<_, windows_result::error::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly 
+performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `std::string::String` implements `From<&mut str>`
+             `std::string::String` implements 
+`From<&std::string::String>`
+             `std::string::String` implements `From<&str>`
+             `std::string::String` implements `From<AssetKey>`
+             `std::string::String` implements `From<Box<str>>`
+             `std::string::String` implements `From<Cow<'_, 
+str>>`
+             `std::string::String` implements `From<char>`
+             `std::string::String` implements 
+`From<tauri::Url>`
+             `std::string::String` implements 
+`From<uuid::Uuid>`
+
+error[E0277]: `?` couldn't convert the error to 
+`std::string::String`
+  --> src\lib.rs:35:64
+   |
+35 |         window::subclass_window_for_noactivate(hwnd.0 as 
+isize)?;
+   |         
+-------------------------------------------------------^ the 
+trait `From<windows_result::error::Error>` is not implemented 
+for `std::string::String`
+   |         |
+   |         this can't be annotated with `?` because it has 
+type `Result<_, windows_result::error::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly 
+performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `std::string::String` implements `From<&mut str>`
+             `std::string::String` implements 
+`From<&std::string::String>`
+             `std::string::String` implements `From<&str>`
+             `std::string::String` implements `From<AssetKey>`
+             `std::string::String` implements `From<Box<str>>`
+             `std::string::String` implements `From<Cow<'_, 
+str>>`
+             `std::string::String` implements `From<char>`
+             `std::string::String` implements 
+`From<tauri::Url>`
+             `std::string::String` implements 
+`From<uuid::Uuid>`
+
+error[E0277]: `?` couldn't convert the error to 
+`std::string::String`
+  --> src\lib.rs:79:23
+   |
+79 |     input::send_copy()?;
+   |     ------------------^ the trait 
+`From<windows_result::error::Error>` is not implemented for 
+`std::string::String`
+   |     |
+   |     this can't be annotated with `?` because it has type 
+`Result<_, windows_result::error::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly 
+performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `std::string::String` implements `From<&mut str>`
+             `std::string::String` implements 
+`From<&std::string::String>`
+             `std::string::String` implements `From<&str>`
+             `std::string::String` implements `From<AssetKey>`
+             `std::string::String` implements `From<Box<str>>`
+             `std::string::String` implements `From<Cow<'_, 
+str>>`
+             `std::string::String` implements `From<char>`
+             `std::string::String` implements 
+`From<tauri::Url>`
+             `std::string::String` implements 
+`From<uuid::Uuid>`
+
+error[E0277]: `?` couldn't convert the error to 
+`std::string::String`
+  --> src\lib.rs:89:24
+   |
+89 |     input::send_paste()?;
+   |     -------------------^ the trait 
+`From<windows_result::error::Error>` is not implemented for 
+`std::string::String`
+   |     |
+   |     this can't be annotated with `?` because it has type 
+`Result<_, windows_result::error::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly 
+performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `std::string::String` implements `From<&mut str>`
+             `std::string::String` implements 
+`From<&std::string::String>`
+             `std::string::String` implements `From<&str>`
+             `std::string::String` implements `From<AssetKey>`
+             `std::string::String` implements `From<Box<str>>`
+             `std::string::String` implements `From<Cow<'_, 
+str>>`
+             `std::string::String` implements `From<char>`
+             `std::string::String` implements 
+`From<tauri::Url>`
+             `std::string::String` implements 
+`From<uuid::Uuid>`
+
+error[E0277]: `?` couldn't convert the error to 
+`std::string::String`
+  --> src\lib.rs:98:22
+   |
+98 |     input::send_cut()?;
+   |     -----------------^ the trait 
+`From<windows_result::error::Error>` is not implemented for 
+`std::string::String`
+   |     |
+   |     this can't be annotated with `?` because it has type 
+`Result<_, windows_result::error::Error>`
+   |
+   = note: the question mark operation (`?`) implicitly 
+performs a conversion on the error value using the `From` trait
+   = help: the following other types implement trait `From<T>`:
+             `std::string::String` implements `From<&mut str>`
+             `std::string::String` implements 
+`From<&std::string::String>`
+             `std::string::String` implements `From<&str>`
+             `std::string::String` implements `From<AssetKey>`
+             `std::string::String` implements `From<Box<str>>`
+             `std::string::String` implements `From<Cow<'_, 
+str>>`
+             `std::string::String` implements `From<char>`
+             `std::string::String` implements 
+`From<tauri::Url>`
+             `std::string::String` implements 
+`From<uuid::Uuid>`
+
+error[E0308]: mismatched types
+   --> src\lib.rs:120:5
+    |
+117 | async fn type_text(text: String) -> Result<(), String> {
+    |                                     ------------------ 
+expected `std::result::Result<(), std::string::String>` 
+because of return type
+...
+120 |     input::type_string(&text)
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Result<(), 
+String>`, found `Result<(), Error>`
+    |
+    = note: expected enum `std::result::Result<_, 
+std::string::String>`
+               found enum `std::result::Result<_, 
+windows_result::error::Error>`
+
+error[E0308]: mismatched types
+  --> src\window\noactivate.rs:46:24
+   |
+46 |             return Err(format!("Failed to get window 
+style: {:?}", GetLastError()));
+   |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+   |
+   = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> src\window\noactivate.rs:56:24
+   |
+56 |             return Err(format!("Failed to set window 
+style: {:?}", GetLastError()));
+   |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+   |
+   = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> src\window\noactivate.rs:74:24
+   |
+74 |             return Err(format!("Failed to get window 
+procedure: {:?}", GetLastError()));
+   |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Error`, found `String`
+   |
+   = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> src\window\noactivate.rs:88:24
+   |
+88 |             return Err(format!("Failed to subclass 
+window: {:?}", GetLastError()));
+   |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+   |
+   = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+   --> src\window\noactivate.rs:158:24
+    |
+158 |             return Err("No foreground window 
+saved".to_string());
+    |                    --- 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Error`, 
+found `String`
+    |                    |
+    |                    arguments to this enum variant are 
+incorrect
+    |
+help: the type constructed contains `std::string::String` due 
+to the type of the argument passed
+   --> src\window\noactivate.rs:158:20
+    |
+158 |             return Err("No foreground window 
+saved".to_string());
+    |                    
+^^^^----------------------------------------^
+    |                        |
+    |                        this argument influences the type 
+of `Err`
+note: tuple variant defined here
+   --> /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c\library\
+core\src\result.rs:566:5
+
+error[E0308]: mismatched types
+   --> src\window\noactivate.rs:166:17
+    |
+166 |             Err(format!("Failed to restore foreground 
+window: {:?}", GetLastError()))
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Error`, found `String`
+    |
+    = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `as_bool` found for enum 
+`std::result::Result<T, E>` in the current scope
+   --> src\window\docking.rs:205:19
+    |
+205 |         if result.as_bool() {
+    |                   ^^^^^^^ method not found in 
+`std::result::Result<(), windows_result::error::Error>`
+
+error[E0308]: mismatched types
+   --> src\window\docking.rs:208:17
+    |
+208 |             Err(format!("Failed to set window position: 
+{:?}", GetLastError()))
+    |                 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+    |
+    = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `as_bool` found for enum 
+`std::result::Result<T, E>` in the current scope
+  --> src\input\clipboard.rs:73:44
+   |
+73 |         if !OpenClipboard(HWND::default()).as_bool() {
+   |                                            ^^^^^^^ method 
+not found in `std::result::Result<(), 
+windows_result::error::Error>`
+
+error[E0308]: mismatched types
+  --> src\input\clipboard.rs:74:24
+   |
+74 |             return Err(format!("Failed to open clipboard: 
+{:?}", GetLastError()));
+   |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+   |
+   = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> src\input\clipboard.rs:89:24
+   |
+89 |             return Err("No text content in 
+clipboard".to_string());
+   |                    --- 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Error`, 
+found `String`
+   |                    |
+   |                    arguments to this enum variant are 
+incorrect
+   |
+help: the type constructed contains `std::string::String` due 
+to the type of the argument passed
+  --> src\input\clipboard.rs:89:20
+   |
+89 |             return Err("No text content in 
+clipboard".to_string());
+   |                    
+^^^^------------------------------------------^
+   |                        |
+   |                        this argument influences the type 
+of `Err`
+note: tuple variant defined here
+  --> /rustc/254b59607d4417e9dffbc307138ae5c86280fe4c\library\c
+ore\src\result.rs:566:5
+
+error[E0277]: the trait bound `*mut c_void: 
+Param<Foundation::HGLOBAL, CopyType>` is not satisfied
+   --> src\input\clipboard.rs:93:30
+    |
+ 93 |         let ptr = GlobalLock(handle.0 as *mut c_void);
+    |                   ---------- ^^^^^^^^^^^^^^^^^^^^^^^ the 
+trait `CanInto<Foundation::HGLOBAL>` is not implemented for 
+`*mut c_void`
+    |                   |
+    |                   required by a bound introduced by this 
+call
+    |
+note: there are multiple different versions of crate 
+`windows_core` in the dependency graph
+   --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-core-0.58.0\src\imp\can_into.rs:1:1
+    |
+  1 | pub trait CanInto<T>: Sized {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+    |
+   ::: C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-core-0.61.2\src\imp\can_into.rs:1:1
+    |
+  1 | pub trait CanInto<T>: Sized {
+    | --------------------------- this is the found trait
+    = help: you can use `cargo tree` to explore your 
+dependency tree
+    = help: the following other types implement trait 
+`CanInto<T>`:
+              `Foundation::HWND` implements 
+`CanInto<Foundation::HANDLE>`
+              `HBITMAP` implements `CanInto<HGDIOBJ>`
+              `HBRUSH` implements `CanInto<HGDIOBJ>`
+              `HCURSOR` implements `CanInto<HICON>`
+              `HFONT` implements `CanInto<HGDIOBJ>`
+              `HINSTANCE` implements `CanInto<HMODULE>`
+              `HMODULE` implements `CanInto<HINSTANCE>`
+              `HPALETTE` implements `CanInto<HGDIOBJ>`
+            and 9 others
+    = note: required for `*mut c_void` to implement 
+`Param<Foundation::HGLOBAL, CopyType>`
+note: required by a bound in `Memory::GlobalLock`
+   --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-0.58.0\src\Windows\Win32\System\Memory\mod.rs:
+184:9
+    |
+182 | pub unsafe fn GlobalLock<P0>(hmem: P0) -> *mut 
+core::ffi::c_void
+    |               ---------- required by a bound in this 
+function
+183 | where
+184 |     P0: 
+windows_core::Param<super::super::Foundation::HGLOBAL>,
+    |         
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+required by this bound in `GlobalLock`
+
+error[E0308]: mismatched types
+  --> src\input\clipboard.rs:95:24
+   |
+95 |             return Err(format!("Failed to lock clipboard 
+data: {:?}", GetLastError()));
+   |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+   |
+   = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+   --> src\input\clipboard.rs:114:9
+    |
+ 70 |   pub fn get_clipboard_text() -> Result<String, String> {
+    |                                  ---------------------- 
+expected `std::result::Result<std::string::String, 
+windows_result::error::Error>` because of return type
+...
+114 | /         String::from_utf16(wide_slice)
+115 | |             .map_err(|e| format!("Failed to convert 
+clipboard text: {}", e))
+    | |________________________________________________________
+____________________^ expected `Result<String, Error>`, found 
+`Result<String, String>`
+    |
+    = note: expected enum `std::result::Result<_, 
+windows_result::error::Error>`
+               found enum `std::result::Result<_, 
+std::string::String>`
+
+error[E0308]: mismatched types
+   --> src\input\clipboard.rs:130:24
+    |
+130 |             return Err(format!("Failed to allocate 
+memory: {:?}", GetLastError()));
+    |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+    |
+    = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `*mut c_void: 
+Param<Foundation::HGLOBAL, CopyType>` is not satisfied
+   --> src\input\clipboard.rs:135:30
+    |
+135 |         let ptr = GlobalLock(hmem.0);
+    |                   ---------- ^^^^^^ the trait 
+`CanInto<Foundation::HGLOBAL>` is not implemented for `*mut 
+c_void`
+    |                   |
+    |                   required by a bound introduced by this 
+call
+    |
+note: there are multiple different versions of crate 
+`windows_core` in the dependency graph
+   --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-core-0.58.0\src\imp\can_into.rs:1:1
+    |
+  1 | pub trait CanInto<T>: Sized {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+    |
+   ::: C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-core-0.61.2\src\imp\can_into.rs:1:1
+    |
+  1 | pub trait CanInto<T>: Sized {
+    | --------------------------- this is the found trait
+    = help: you can use `cargo tree` to explore your 
+dependency tree
+    = help: the following other types implement trait 
+`CanInto<T>`:
+              `Foundation::HWND` implements 
+`CanInto<Foundation::HANDLE>`
+              `HBITMAP` implements `CanInto<HGDIOBJ>`
+              `HBRUSH` implements `CanInto<HGDIOBJ>`
+              `HCURSOR` implements `CanInto<HICON>`
+              `HFONT` implements `CanInto<HGDIOBJ>`
+              `HINSTANCE` implements `CanInto<HMODULE>`
+              `HMODULE` implements `CanInto<HINSTANCE>`
+              `HPALETTE` implements `CanInto<HGDIOBJ>`
+            and 9 others
+    = note: required for `*mut c_void` to implement 
+`Param<Foundation::HGLOBAL, CopyType>`
+note: required by a bound in `Memory::GlobalLock`
+   --> C:\Users\PC\.cargo\registry\src\index.crates.io-1949cf8c
+6b5b557f\windows-0.58.0\src\Windows\Win32\System\Memory\mod.rs:
+184:9
+    |
+182 | pub unsafe fn GlobalLock<P0>(hmem: P0) -> *mut 
+core::ffi::c_void
+    |               ---------- required by a bound in this 
+function
+183 | where
+184 |     P0: 
+windows_core::Param<super::super::Foundation::HGLOBAL>,
+    |         
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+required by this bound in `GlobalLock`
+
+error[E0308]: mismatched types
+   --> src\input\clipboard.rs:138:24
+    |
+138 |             return Err(format!("Failed to lock memory: 
+{:?}", GetLastError()));
+    |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+    |
+    = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `as_bool` found for enum 
+`std::result::Result<T, E>` in the current scope
+   --> src\input\clipboard.rs:145:44
+    |
+145 |         if !OpenClipboard(HWND::default()).as_bool() {
+    |                                            ^^^^^^^ 
+method not found in `std::result::Result<(), 
+windows_result::error::Error>`
+
+error[E0308]: mismatched types
+   --> src\input\clipboard.rs:147:24
+    |
+147 |             return Err(format!("Failed to open 
+clipboard: {:?}", GetLastError()));
+    |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+    |
+    = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no method named `as_bool` found for enum 
+`std::result::Result<T, E>` in the current scope
+   --> src\input\clipboard.rs:160:30
+    |
+160 |         if !EmptyClipboard().as_bool() {
+    |                              ^^^^^^^ method not found in 
+`std::result::Result<(), windows_result::error::Error>`
+
+error[E0308]: mismatched types
+   --> src\input\clipboard.rs:162:24
+    |
+162 |             return Err(format!("Failed to empty 
+clipboard: {:?}", GetLastError()));
+    |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+    |
+    = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+   --> src\input\clipboard.rs:168:24
+    |
+168 |             return Err(format!("Failed to set clipboard 
+data: {:?}", GetLastError()));
+    |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+    |
+    = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> src\input\keyboard.rs:95:24
+   |
+95 |               return Err(format!(
+   |  ________________________^
+96 | |                 "SendInput failed: sent {} of {} 
+inputs",
+97 | |                 sent,
+98 | |                 inputs.len()
+99 | |             ));
+   | |_____________^ expected `Error`, found `String`
+   |
+   = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+   --> src\input\keyboard.rs:118:24
+    |
+118 |             return Err(format!("SendInput failed: sent 
+{} of 2 inputs", sent));
+    |                        
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Error`, found `String`
+    |
+    = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+   --> src\input\keyboard.rs:139:28
+    |
+139 |                 return Err(format!("SendInput failed at 
+char {}", ch));
+    |                            
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Error`, 
+found `String`
+    |
+    = note: this error originates in the macro `format` (in 
+Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> src\lib.rs:55:5
+   |
+54 | fn restore_foreground() -> Result<(), String> {
+   |                            ------------------ expected 
+`std::result::Result<(), std::string::String>` because of 
+return type
+55 |     window::restore_foreground_window()
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected 
+`Result<(), String>`, found `Result<(), Error>`
+   |
+   = note: expected enum `std::result::Result<_, 
+std::string::String>`
+              found enum `std::result::Result<_, 
+windows_result::error::Error>`
+
+error[E0308]: mismatched types
+  --> src\lib.rs:64:9
+   |
+60 | fn set_position(window: tauri::Window, position: 
+WindowPosition) -> Result<(), String> {
+   |                                                           
+          ------------------ expected `std::result::Result<(), 
+std::string::String>` because of return type
+...
+64 |         window::set_window_position(hwnd.0 as isize, 
+&position)
+   |         
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+expected `Result<(), String>`, found `Result<(), Error>`
+   |
+   = note: expected enum `std::result::Result<_, 
+std::string::String>`
+              found enum `std::result::Result<_, 
+windows_result::error::Error>`
+
+error[E0308]: mismatched types
+   --> src\lib.rs:106:5
+    |
+105 | fn get_clipboard() -> Result<String, String> {
+    |                       ---------------------- expected 
+`std::result::Result<std::string::String, 
+std::string::String>` because of return type
+106 |     input::get_clipboard_text()
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Result<String, 
+String>`, found `Result<String, Error>`
+    |
+    = note: expected enum `std::result::Result<_, 
+std::string::String>`
+               found enum `std::result::Result<_, 
+windows_result::error::Error>`
+
+error[E0308]: mismatched types
+   --> src\lib.rs:112:5
+    |
+111 | fn set_clipboard(text: String) -> Result<(), String> {
+    |                                   ------------------ 
+expected `std::result::Result<(), std::string::String>` 
+because of return type
+112 |     input::set_clipboard_text(&text)
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected 
+`Result<(), String>`, found `Result<(), Error>`
+    |
+    = note: expected enum `std::result::Result<_, 
+std::string::String>`
+               found enum `std::result::Result<_, 
+windows_result::error::Error>`
+
+Some errors have detailed explanations: E0107, E0277, E0308, 
+E0425, E0599.
+For more information about an error, try `rustc --explain 
+E0107`.
+warning: `floating-md` (lib) generated 3 warnings
+error: could not compile `floating-md` (lib) due to 51 
+previous errors; 3 warnings emitted
