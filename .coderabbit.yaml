@@ -1,0 +1,33 @@
+# CodeRabbit Configuration
+# Reference: https://docs.coderabbit.ai/getting-started/configure-coderabbit
+
+language: "en-US"
+
+reviews:
+  profile: "chill"
+  auto_review:
+    enabled: true
+    # We enable reviews for all branches to ensure our 'review-base' PR works
+    draft: false
+  
+  path_filters:
+    - "!Backups/**"
+    - "!node_modules/**"
+    - "!dist/**"
+    - "!.agent/**"
+    - "!.specify/**"
+    - "!.git/**"
+    - "!public/fonts/**"
+    - "!src-tauri/icons/**"
+    - "!pnpm-lock.yaml"
+    - "!src-tauri/Cargo.lock"
+    - "**/*.rs"
+    - "**/*.ts"
+    - "**/*.tsx"
+    - "**/*.css"
+    - "**/*.html"
+    - "**/*.json"
+    - "**/*.md"
+
+chat:
+  enabled: true
