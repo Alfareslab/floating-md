@@ -1,0 +1,53 @@
+# CodeRabbit Configuration for Floating MD
+# Full Codebase Review Setup (Optimized Based on Bot Feedback)
+
+language: "en-US"
+
+reviews:
+  # Review all files in the PR
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_placeholder: "@coderabbitai summary"
+  auto_title_placeholder: "@coderabbitai"
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  # Path filters - Included lock files for better security coverage as suggested by bot
+  path_filters:
+    - "!**/node_modules/**"
+    - "!**/dist/**"
+    - "!**/target/**"
+    - "!**/Backups/**"
+    - "**/*.lock" # Specifically included
+
+  # Tools to use for analysis
+  tools:
+    github-checks:
+      enabled: true
+    ast-grep:
+      essential_rules: true
+      rule_dirs: []
+    shellcheck:
+      enabled: true
+
+  # Auto review settings
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "master"
+
+# Chat settings
+chat:
+  auto_reply: true
+
+# Knowledge base - index the whole codebase
+knowledge_base:
+  opt_out: false
+  learnings:
+    scope: "auto"
+  issues:
+    scope: "auto"
+  pull_requests:
+    scope: "auto"
